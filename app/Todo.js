@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, SafeAreaView, Text, View, Button, TextInput, FlatList, Pressable} from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, Button, TextInput, FlatList, Pressable, Alert} from 'react-native';
 
 
 export default function App(){
@@ -17,10 +17,17 @@ export default function App(){
 
   //To add chores
   const addHandler = (input) => {
+    if (input.trim())
+    {
     setChore((prevList) => {
       return [{name: input, key: Math.random().toString()},
       ...prevList]
     })
+    }
+    else
+    {
+      Alert.alert('Error', 'Todos cannot be empty')
+    }
   }
 
   //To remove chores
@@ -103,10 +110,10 @@ const styles = StyleSheet.create({
   },
 
   textInput : {
-    borderWidth: 1,
     borderColor: '#777',
+    borderBottomWidth: 1,
     padding: 8,
     marginVertical: 10,
-    marginHorizontal: 100,
+    marginHorizontal: 80,
   },
 })

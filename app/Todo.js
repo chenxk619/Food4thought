@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { StyleSheet, SafeAreaView, Text, View, Button, TextInput, FlatList, Pressable, Alert} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+
 export default function App(){
 
   const [input, setInput] = useState('');

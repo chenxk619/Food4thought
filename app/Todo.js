@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor : '#777',
     borderWidth: 1,
-    borderStyle: 'dashed',
+    borderStyle: 'dotted',
     padding: 5,
     margin: 5,
     fontWeight: '500',

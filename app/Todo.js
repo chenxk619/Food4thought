@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { StyleSheet, SafeAreaView, Text, View, Button, TextInput, FlatList, Pressable, Alert} from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 export default function App(){
@@ -58,7 +59,10 @@ export default function App(){
         data = {chore}
         renderItem = {({item}) => 
         <Pressable onPress = {() => removeHandler(item.key)}>
-          <Text style = {styles.list}> {item.name} </Text>
+          <View style = {styles.list}>
+            <AntDesign name = 'minuscircleo' size = {15}/>
+            <Text style = {{paddingLeft: 10, paddingVertical: 5,}}> {item.name} </Text>
+          </View>
         </Pressable>
         }/>
 
@@ -99,14 +103,16 @@ const styles = StyleSheet.create({
   },
 
   list : {
+    flexDirection: 'row',
     borderColor : 'black',
     borderRadius: 10,
     borderColor : '#777',
     borderWidth: 1,
-    borderStyle: 'dashed',
+    borderStyle: 'dotted',
     padding: 5,
     margin: 5,
     fontWeight: '500',
+    alignItems: 'center',
   },
 
   textInput : {

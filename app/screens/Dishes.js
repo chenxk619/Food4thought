@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 
-export default function App() {
+export default function Dishes() {
 
   return (
     <SafeAreaView>

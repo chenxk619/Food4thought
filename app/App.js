@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {SafeAreaView, Text, View, TextInput, Button} from 'react-native';
 import { globalStyles } from './styles/globalStyles';
 import FlatButton from './custom/Button';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
 
 export default function App() {
 

@@ -21,16 +21,16 @@ export default function App() {
 
       <View style = {globalStyles.appLogin}>
         <Text style = {[globalStyles.appBodyFont, 
-          {fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 10,}]}>
+          {fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 15,}]}>
           Login
           </Text>
         <TextInput style = {globalStyles.userInputs} placeholder='Email' />
         <TextInput style = {globalStyles.userInputs} placeholder='Password'/>
 
-        <FlatButton text={'Sign In'} onPress={test} invert={'y'}/>
+        <FlatButton text={'Sign In'} onPress={test} invert={'n'}/>
         <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={test} invert={'y'}/>
 
-        <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 120}]}>Don't have an account? Sign Up</Text>
+        <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account? Sign Up</Text>
       </View>
 
     </SafeAreaView>

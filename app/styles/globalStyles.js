@@ -22,7 +22,7 @@ export const globalStyles = StyleSheet.create({
     },
 
     appLogin: {
-        flex: 7,
+        flex: 8,
         backgroundColor: '#eee',
         alignItems: 'center',
         justifyContent: 'flex-start',

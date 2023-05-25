@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 
-export default function Input() {
+export default function Review() {
 
   return (
     <SafeAreaView>
-      <Text> Inputs! </Text>
+      <Text> Review! </Text>
     </SafeAreaView>
   );
 }

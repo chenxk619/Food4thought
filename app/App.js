@@ -1,40 +1,20 @@
-import React, {useState} from 'react';
-import {SafeAreaView, Text, View, TextInput, Button} from 'react-native';
-import { globalStyles } from './styles/globalStyles';
-import FlatButton from './custom/Button';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Login from "./screens/login";
+import Dishes from "./screens/dishes";
+import Review from "./screens/review";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-
-  const test = () => {
-    console.log(1);
-  }
   return (
-    <SafeAreaView style = {globalStyles.container}>
-
-      <View style = {globalStyles.appHeader}>
-        <Text style = {globalStyles.appMainTitle}>FOOD4THOUGHT</Text>
-      </View>
-
-      <View style = {globalStyles.appBody}>
-        <Text style = {globalStyles.appBodyFont}> Say hello to endless culinary possibilities! </Text>
-      </View>
-
-      <View style = {globalStyles.appLogin}>
-        <Text style = {[globalStyles.appBodyFont, 
-          {fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 15,}]}>
-          Login
-          </Text>
-        <TextInput style = {globalStyles.userInputs} placeholder='Email' />
-        <TextInput style = {globalStyles.userInputs} placeholder='Password'/>
-
-        <FlatButton text={'Sign In'} onPress={test} invert={'n'}/>
-        <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={test} invert={'y'}/>
-
-        <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account? Sign Up</Text>
-      </View>
-
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Dishes" component={Dishes} />
+        <Stack.Screen name="Review" component={Review} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

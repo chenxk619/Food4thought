@@ -1,15 +1,11 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text, View, TextInput, Button} from 'react-native';
+import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 
 
 export default function Login( {navigation} ) {
 
-  const test = () => {
-    console.log(1);
-
-  }
 
   return (
     <SafeAreaView style = {globalStyles.container}>
@@ -27,13 +23,18 @@ export default function Login( {navigation} ) {
           {fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 15,}]}>
           Login
           </Text>
-        <TextInput style = {globalStyles.userInputs} placeholder='Email' />
-        <TextInput style = {globalStyles.userInputs} placeholder='Password'/>
+        <TextInput style = {globalStyles.userInputs} keyboardType = 'email-address' placeholder='Email' />
+        <TextInput style = {globalStyles.userInputs} blurOnSubmit = {true}  placeholder='Password'/>
 
-        <FlatButton text={'Sign In'} onPress={() => navigation.navigate('Dishes')} invert={'n'}/>
-        <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={() => navigation.navigate('Dishes')} invert={'y'}/>
+        <FlatButton text={'Sign In'} onPress={() => navigation.navigate('Inputs')} invert={'n'}/>
+        <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={() => navigation.navigate('Password')} invert={'y'}/>
 
-        <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account? Sign Up</Text>
+        <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
+            <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?</Text>
+            <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+                <Text style = {{color:'blue', fontFamily: 'Futura-Medium',}}> Sign Up</Text>
+            </Pressable>
+        </View>
       </View>
 
     </SafeAreaView>

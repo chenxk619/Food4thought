@@ -2,12 +2,11 @@ import React, {useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import FlatButton from '../custom/Button';
 
-export default function Dishes( {navigation} ) {
+export default function SignUp( {navigation} ) {
 
   return (
     <SafeAreaView>
-      <Text> Dishes! </Text>
-      <FlatButton text = {'Reviews'} invert = {'n'} onPress={() => {navigation.navigate('Review')}}/>
+      <Text> Sign Up! </Text>
     </SafeAreaView>
   );
 }

@@ -6,7 +6,7 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
     },
 
-    // --- App --- //
+    // --- Login --- //
     appHeader: {
         flex: 1,
         backgroundColor: '#333',
@@ -30,7 +30,7 @@ export const globalStyles = StyleSheet.create({
 
     // ### Components ### //
 
-    // --- App --- //
+    // --- Login --- //
     userInputs: {
         borderColor: '#777',
         borderRadius: 15,
@@ -54,7 +54,7 @@ export const globalStyles = StyleSheet.create({
 
     // ### Fonts ### //
 
-    // --- App --- //
+    // --- Login --- //
     appMainTitle: {
         fontSize: 28,
         color: '#fff',

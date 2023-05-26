@@ -2,11 +2,10 @@ import React, {useState} from 'react';
 import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
-
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth } from '../firebaseconfig';
 
 export default function Login( {navigation} ) {
-
-
   return (
     <SafeAreaView style = {globalStyles.container}>
 
@@ -31,7 +30,7 @@ export default function Login( {navigation} ) {
 
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?</Text>
-            <Pressable onPress={() => {navigation.navigate('SignUp')}}>
+            <Pressable onPress={() => navigation.navigate('SignUp')}>
                 <Text style = {{color:'blue', fontFamily: 'Futura-Medium',}}> Sign Up</Text>
             </Pressable>
         </View>

@@ -1,11 +1,38 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from '../firebaseconfig';
+import { auth } from '../firebaseconfig';
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login( {navigation} ) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.navigate('Inputs')
+      }
+    })
+    return unsubscribe
+  }, [])
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        // Signed in 
+        const user = userCredentials.user;
+      })
+      .catch((error) => {
+        // Login Issues
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        console.error(errorMessage);
+      });
+  }
+
   return (
     <SafeAreaView style = {globalStyles.container}>
 
@@ -22,10 +49,23 @@ export default function Login( {navigation} ) {
           {fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 15,}]}>
           Login
           </Text>
-        <TextInput style = {globalStyles.userInputs} keyboardType = 'email-address' placeholder='Email' />
-        <TextInput style = {globalStyles.userInputs} blurOnSubmit = {true}  placeholder='Password'/>
+        <TextInput 
+          style = {globalStyles.userInputs} 
+          autoCapitalize='none' 
+          keyboardType = 'email-address' 
+          placeholder='Email' 
+          value={email}
+          onChangeText={text => setEmail(text)} 
+          />
+        <TextInput 
+          style = {globalStyles.userInputs} 
+          blurOnSubmit = {true}  
+          placeholder='Password'
+          value={password}
+          onChangeText={text => setPassword(text)}
+          />
 
-        <FlatButton text={'Sign In'} onPress={() => navigation.navigate('Inputs')} invert={'n'}/>
+        <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/>
         <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={() => navigation.navigate('Password')} invert={'y'}/>
 
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>

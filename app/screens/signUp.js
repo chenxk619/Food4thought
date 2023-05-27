@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {SafeAreaView, Text, TextInput, Button} from 'react-native';
 import FlatButton from '../custom/Button';
 import { getAuth,createUserWithEmailAndPassword } from 'firebase/auth';
-import { firebaseApp } from '../firebaseconfig';
+import { auth } from '../firebaseconfig';
 import { globalStyles } from '../styles/globalStyles';
 
 export default function SignUp( {navigation} ) {
@@ -10,7 +10,6 @@ export default function SignUp( {navigation} ) {
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
-    const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
@@ -27,7 +26,8 @@ export default function SignUp( {navigation} ) {
   return (
     <SafeAreaView>
       <TextInput 
-        styles={globalStyles.userInputs} 
+        styles={globalStyles.userInputs}
+        autoCapitalize='none' 
         value={email} 
         onChangeText={(email)=> {setEmail(email)}} 
         placeholder='Email'

@@ -15,29 +15,32 @@ export default function SignUp( {navigation} ) {
       // Signed in 
       const user = userCredential.user;
     })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(errorCode);
-      console.error(errorMessage);
-    });
+    .catch((error) => alert(error.message))
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={globalStyles.appBody}>
+      <Text 
+        style = {[globalStyles.appBodyFont, {
+          fontSize: 35, fontWeight: '700', alignSelf: 'center', marginVertical: 15
+          }]}>
+        Create Account
+        </Text>
       <TextInput 
-        styles={globalStyles.userInputs}
+        style = {globalStyles.userInputs} 
         autoCapitalize='none' 
-        value={email} 
-        onChangeText={(email)=> {setEmail(email)}} 
-        placeholder='Email'
+        keyboardType = 'email-address' 
+        placeholder='Email' 
+        value={email}
+        onChangeText={text => setEmail(text)} 
       />
       <TextInput 
-        styles={globalStyles.userInputs} 
-        value={password} 
-        onChangeText={(password)=> {setPassword(password)}} 
-        placeholder='Password' secureTextEntry
-      />
+        style = {globalStyles.userInputs} 
+        autoCapitalize='none' 
+        placeholder='Password' 
+        value={password}
+        onChangeText={text => setPassword(text)} 
+        />
       <Button onPress={handleSignUp} title='Sign Up'></Button>
     </SafeAreaView>
   );

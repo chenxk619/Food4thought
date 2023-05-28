@@ -13,7 +13,7 @@ export default function Login( {navigation} ) {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         navigation.navigate('Inputs')
-      }
+      } 
     })
     return unsubscribe
   }, [])
@@ -24,13 +24,13 @@ export default function Login( {navigation} ) {
         // Signed in 
         const user = userCredentials.user;
       })
-      .catch((error) => {
-        // Login Issues
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(errorCode);
-        console.error(errorMessage);
-      });
+      .catch((error) => alert(error.message))
+      // .catch((error) => {
+      // const errorCode = error.code;
+      // const errorMessage = error.message;
+      // console.error(errorCode);
+      // console.error(errorMessage);
+    });
   }
 
   return (
@@ -63,6 +63,7 @@ export default function Login( {navigation} ) {
           placeholder='Password'
           value={password}
           onChangeText={text => setPassword(text)}
+          secureTextEntry
           />
 
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/>

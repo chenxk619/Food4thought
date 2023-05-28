@@ -24,13 +24,14 @@ export default function Login( {navigation} ) {
         // Signed in 
         const user = userCredentials.user;
       })
-      .catch((error) => alert(error.message))
-      // .catch((error) => {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // console.error(errorCode);
-      // console.error(errorMessage);
-    };
+      .catch((error) => {
+        // Login Issues
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        console.error(errorMessage);
+      });
+  }
 
   return (
     <SafeAreaView style = {globalStyles.container}>

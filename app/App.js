@@ -2,9 +2,9 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "./screens/login";
-import Inputs from "./screens/inputs";
-import Dishes from "./screens/dishes";
-import Review from "./screens/review";
+import Inputs from "./screens/(auth)/inputs";
+import Dishes from "./screens/(auth)/dishes";
+import Review from "./screens/(auth)/review";
 import Password from "./screens/password";
 import SignUp from "./screens/signUp";
 

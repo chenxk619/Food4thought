@@ -28,6 +28,14 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
 
+    // --- Sign Up ---//
+    appBody2: {
+        flex: 1,
+        backgroundColor: '#666',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+
     // ### Components ### //
 
     // --- Login --- //
@@ -66,6 +74,12 @@ export const globalStyles = StyleSheet.create({
         fontSize: 18,
         color: '#111',
         fontFamily: 'Futura',
+    },
+
+    shadow: {
+        shadowRadius: 3,
+        shadowOpacity: 0.6, 
+        shadowOffset: {width: 0, height: 5},
     }
 }
 )

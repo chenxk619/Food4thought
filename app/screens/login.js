@@ -30,8 +30,7 @@ export default function Login( {navigation} ) {
       // const errorMessage = error.message;
       // console.error(errorCode);
       // console.error(errorMessage);
-    });
-  }
+    };
 
   return (
     <SafeAreaView style = {globalStyles.container}>

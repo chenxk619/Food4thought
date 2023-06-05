@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
-<<<<<<< HEAD
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -33,12 +32,6 @@ export default function Login( {navigation} ) {
       // console.error(errorMessage);
     };
 
-=======
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from '../firebaseconfig';
-
-export default function Login( {navigation} ) {
->>>>>>> e96b9e89 (Sign Up Created)
   return (
     <SafeAreaView style = {globalStyles.container}>
 

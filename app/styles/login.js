@@ -1,10 +1,9 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
-import { globalStyles } from './globalStyles';
+import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { Link } from 'expo-router';
 
 export default function Login( {navigation} ) {
   const [email, setEmail] = useState('');
@@ -31,7 +30,8 @@ export default function Login( {navigation} ) {
       // const errorMessage = error.message;
       // console.error(errorCode);
       // console.error(errorMessage);
-    };
+    });
+  }
 
   return (
     <SafeAreaView style = {globalStyles.container}>
@@ -66,7 +66,7 @@ export default function Login( {navigation} ) {
           secureTextEntry
           />
 
-        <Link><FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/></Link>
+        <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/>
         <FlatButton style = {{backgroundColor: 'white'}} text={'Forgot Password'} onPress={() => navigation.navigate('Password')} invert={'y'}/>
 
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>

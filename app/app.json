@@ -16,7 +16,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.orbital-app",
+      "googleServicesFile" : "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,6 +28,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }

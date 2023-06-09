@@ -1,18 +1,27 @@
 import {useEffect, useState} from 'react';
-import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
+import {SafeAreaView, Text, View, TextInput} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { Link, useRouter } from 'expo-router';
+import { GoogleSignin } from '@react-native-google-signin/google-signin/';
+
+GoogleSignin.configure({
+  webClientId: '330002817844-gcndolvp2hu7e71o0l4t3ak73658p1ss.apps.googleusercontent.com',
+  iosClientId: '330002817844-obhdei0qtbfqro1vmbl592cq8923ah5c.apps.googleusercontent.com',
+});
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  //For Google Log in
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
+      //if signed in: Go to inputs
       if (user) {
         router.replace("/inputs")
       } 
@@ -33,6 +42,25 @@ export default function Login() {
       // console.error(errorCode);
       // console.error(errorMessage);
     };
+
+  const handlePassword = () => {
+    router.replace("/password");
+  }
+  
+  async function onGoogleButtonPress() {
+    // Check if your device supports Google Play
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+  
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
+    
+
 
   return (
     <SafeAreaView style = {globalStyles.container}>
@@ -68,18 +96,8 @@ export default function Login() {
           />
 
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/>
-        <Link href="/password" style = {{
-            borderRadius: 15,
-            padding: 12, 
-            margin: 10, 
-            width: 280,
-            color: 'black',
-            fontWeight: 'bold',
-            fontSize: 15,
-            textAlign: 'center',
-        }}>
-          Forget Password
-          </Link>
+        <FlatButton text={'Sign In with Google'} onPress = {onGoogleButtonPress} invert={'n'}/>
+        <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'}/>
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?&nbsp;</Text>
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 

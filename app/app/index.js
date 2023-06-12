@@ -5,29 +5,36 @@ import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { Link, useRouter } from 'expo-router';
-import { GoogleSignin } from '@react-native-google-signin/google-signin/';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from "expo-auth-session/providers/google";
 
-GoogleSignin.configure({
-  webClientId: '330002817844-gcndolvp2hu7e71o0l4t3ak73658p1ss.apps.googleusercontent.com',
-  iosClientId: '330002817844-obhdei0qtbfqro1vmbl592cq8923ah5c.apps.googleusercontent.com',
-});
-
+WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  //For Google Log in
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      //if signed in: Go to inputs
-      if (user) {
-        router.replace("/inputs")
-      } 
-    })
-    return unsubscribe
-  }, [])
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    //iosClientId : "330002817844-obhdei0qtbfqro1vmbl592cq8923ah5c.apps.googleusercontent.com",
+    expoClientId : "330002817844-gcndolvp2hu7e71o0l4t3ak73658p1ss.apps.googleusercontent.com",
+    webClientId : "330002817844-gcndolvp2hu7e71o0l4t3ak73658p1ss.apps.googleusercontent.com",
+    scopes: ['profile', 'email'],
+  });
+
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged(user => {
+  //     //if signed in: Go to inputs
+  //     if (user) {
+  //       router.replace("/inputs")
+  //     } 
+  //   })
+  //   return unsubscribe
+  // }, [])
+
+
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -36,30 +43,35 @@ export default function Login() {
         const user = userCredentials.user;
       })
       .catch((error) => alert(error.message))
-      // .catch((error) => {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // console.error(errorCode);
-      // console.error(errorMessage);
     };
 
   const handlePassword = () => {
     router.replace("/password");
   }
-  
-  async function onGoogleButtonPress() {
-    // Check if your device supports Google Play
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    // Get the users ID token
-    const { idToken } = await GoogleSignin.signIn();
-  
-    // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
-  }
-    
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
+
+  const getUserInfo = async () => {
+
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      setUserInfo(user);
+    } catch (error) {
+      console.log(1);
+    }
+  };
 
 
   return (
@@ -95,9 +107,9 @@ export default function Login() {
           secureTextEntry
           />
 
-        <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'}/>
-        <FlatButton text={'Sign In with Google'} onPress = {onGoogleButtonPress} invert={'n'}/>
-        <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'}/>
+        <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
+        <FlatButton text={'Sign In with Google'} onPress = {promptAsync()} invert={'n'} disabled={!request}/>
+        <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?&nbsp;</Text>
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 

@@ -12,6 +12,10 @@ export default function SignUp() {
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      // Signed in 
+      // const user = userCredential.user;
+    })
     .catch((error) => Alert.alert(error.message))
   };
 

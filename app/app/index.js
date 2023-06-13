@@ -14,7 +14,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const [token, setToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -24,17 +24,15 @@ export default function Login() {
     scopes: ['profile', 'email'],
   });
 
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged(user => {
-  //     //if signed in: Go to inputs
-  //     if (user) {
-  //       router.replace("/inputs")
-  //     } 
-  //   })
-  //   return unsubscribe
-  // }, [])
-
-
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      //if signed in: Go to inputs
+      if (user) {
+        router.replace("/inputs")
+      } 
+    })
+    return unsubscribe
+  }, [])
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -50,26 +48,31 @@ export default function Login() {
   }
 
   useEffect(() => {
+    console.log("used effect")
     if (response?.type === "success") {
-      setToken(response.authentication.accessToken);
+      setAccessToken(response.authentication.accessToken);
       getUserInfo();
     }
-  }, [response, token]);
+    else{
+      console.log(response?.type);
+    }
+  }, [response, accessToken]);
+  
 
   const getUserInfo = async () => {
-
+    console.log("getting user info");
     try {
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
 
       const user = await response.json();
       setUserInfo(user);
     } catch (error) {
-      console.log(1);
+      console.log("userInfo error");
     }
   };
 
@@ -108,7 +111,7 @@ export default function Login() {
           />
 
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
-        <FlatButton text={'Sign In with Google'} onPress = {promptAsync()} invert={'n'} disabled={!request}/>
+        <FlatButton text={'Sign In with Google'} onPress = {() => promptAsync()} invert={'n'} disabled={false}/>
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?&nbsp;</Text>

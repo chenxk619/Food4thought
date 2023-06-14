@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {SafeAreaView, Text, View, TextInput, Pressable} from 'react-native';
+import { useEffect, useState } from 'react';
+import { SafeAreaView, Text, View, TextInput, Alert } from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
@@ -9,29 +9,24 @@ import { Link, useRouter } from 'expo-router';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        router.replace("/inputs")
-      } 
-    })
-    return unsubscribe
-  }, [])
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       router.replace("/inputs")
+  //     } 
+  //   })
+  //   return unsubscribe
+  // },)
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        // Signed in 
-        const user = userCredentials.user;
+      .then(() => {
+        router.replace("/inputs")
       })
-      .catch((error) => alert(error.message))
-      // .catch((error) => {
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // console.error(errorCode);
-      // console.error(errorMessage);
+      .catch((error) => Alert.alert(error.message))
     };
 
   return (
@@ -85,9 +80,6 @@ export default function Login() {
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up
               </Link>
-            {/* <Pressable onPress={() => navigation.navigate('SignUp')}>
-                <Text style = {{color:'blue', fontFamily: 'Futura-Medium',}}> Sign Up</Text>
-            </Pressable> */}
         </View>
       </View>
 

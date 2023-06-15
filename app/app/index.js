@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {SafeAreaView, Text, View, TextInput} from 'react-native';
+import { useEffect, useState } from 'react';
+import { SafeAreaView, Text, View, TextInput, Alert } from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
@@ -13,6 +13,7 @@ WebBrowser.maybeCompleteAuthSession();
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const router = useRouter();
   const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
@@ -24,23 +25,12 @@ export default function Login() {
     scopes: ['profile', 'email'],
   });
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      //if signed in: Go to inputs
-      if (user) {
-        router.replace("/inputs")
-      } 
-    })
-    return unsubscribe
-  }, [])
-
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        // Signed in 
-        const user = userCredentials.user;
+      .then(() => {
+        router.replace("/inputs")
       })
-      .catch((error) => alert(error.message))
+      .catch((error) => Alert.alert(error.message))
     };
 
   const handlePassword = () => {
@@ -118,9 +108,6 @@ export default function Login() {
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up
               </Link>
-            {/* <Pressable onPress={() => navigation.navigate('SignUp')}>
-                <Text style = {{color:'blue', fontFamily: 'Futura-Medium',}}> Sign Up</Text>
-            </Pressable> */}
         </View>
       </View>
 

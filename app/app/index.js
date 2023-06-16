@@ -38,7 +38,6 @@ export default function Login() {
   }
 
   useEffect(() => {
-    console.log("used effect")
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
       getUserInfo();
@@ -50,7 +49,6 @@ export default function Login() {
   
 
   const getUserInfo = async () => {
-    console.log("getting user info");
     try {
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
@@ -61,6 +59,7 @@ export default function Login() {
 
       const user = await response.json();
       setUserInfo(user);
+      router.replace("/inputs");
     } catch (error) {
       console.log("userInfo error");
     }

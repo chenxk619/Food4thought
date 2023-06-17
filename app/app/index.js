@@ -5,6 +5,7 @@ import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { Link, useRouter } from 'expo-router';
+import { IconButton } from 'react-native-paper'
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from "expo-auth-session/providers/google";
 
@@ -101,13 +102,16 @@ export default function Login() {
         />
 
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
-        <FlatButton text={'Sign In with Google'} onPress = {() => promptAsync()} invert={'n'} disabled={false}/>
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
-        <View style = {{flexDirection: 'row', alignItems: 'flex-end',}}>
-            <Text style = {[globalStyles.appBodyFont, {fontSize: 15, marginTop: 200}]}>Don't have an account?&nbsp;</Text>
+        <View style = {{flexDirection: 'row', marginBottom: 150}}>
+            <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don't have an account?&nbsp;</Text>
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up
               </Link>
+        </View>
+        <View style = {{flexDirection: 'row'}}>
+          <IconButton icon = {'google'}/>
+          <FlatButton text={'Sign In with Google'} onPress = {() => promptAsync()} invert={'y'} disabled={false}/>
         </View>
       </View>
 

@@ -4,6 +4,7 @@ import { auth } from '../firebaseconfig';
 import { globalStyles } from '../styles/globalStyles';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import FlatButton from '../custom/Button';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');

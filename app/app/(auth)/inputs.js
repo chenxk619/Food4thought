@@ -13,6 +13,7 @@ export default function Inputs() {
 
   const [inputs, setInputs] = useState();
   const [ingredients, setIngredients] = useState([]);
+
   function Ingredient(props) {
     return (
       <Card style={[globalStyles.ingredientsCard]}>

@@ -1,30 +1,28 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 
-export default function FlatButton({text, onPress, invert, disabled}){
-    if (!disabled){
-        if (invert == 'y')
-        {
-            return (
-                <Pressable onPress = {onPress}>
-                    <View style = {styles.buttonInvert}>
-                        <Text style = {styles.buttonTextInvert}> {text} </Text>
-                    </View>
-                </Pressable>
+export default function FlatButton({text, onPress, invert}){
+    if (invert == 'y')
+    {
+        return (
+            <Pressable onPress = {onPress}>
+                <View style = {styles.buttonInvert}>
+                    <Text style = {styles.buttonTextInvert}> {text} </Text>
+                </View>
+            </Pressable>
 
-            )
-        }
+        )
+    }
 
-        else{
-            return (
-                <Pressable onPress = {onPress}>
-                    <View style = {styles.button}>
-                        <Text style = {styles.buttonText}> {text} </Text>
-                    </View>
-                </Pressable>
+    else{
+        return (
+            <Pressable onPress = {onPress}>
+                <View style = {styles.button}>
+                    <Text style = {styles.buttonText}> {text} </Text>
+                </View>
+            </Pressable>
 
-            )
-        }
+        )
     }
 }
 

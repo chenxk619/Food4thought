@@ -28,41 +28,29 @@ export default function Password( {navigation} ) {
 
   return (
     <SafeAreaView style = {globalStyles.appBody}>
-      <View style = {{flex : 1}}>
-        <Text style={[globalStyles.appMainTitle,{
-          alignSelf: 'center',
-          fontSize: 30, 
-          color: 'black',
-          }]}> 
+      <IconButton icon='arrow-left' size = {35} 
+        style={{flex:1, alignSelf:'flex-start', marginLeft: 20}} onPress={()=>{router.replace('/')}}/>
+      <View style = {{flex : 9, paddingHorizontal:  15, marginHorizontal: 30, marginBottom: 150, justifyContent: 'center'}}>
+        <IconButton icon='lock-reset' style = {{justifyContent:'flex-start' ,alignSelf:'center', marginBottom: 30}} size={70} />
+        <Text style={[globalStyles.appMainTitle,{alignSelf: 'center', fontSize: 30, color: 'black', marginBottom: 20}]}> 
           Forgot Password 
         </Text>
-      </View>
-      <View style = {{flex : 2, paddingHorizontal: 20, marginHorizontal: 30}}>
-
         <Text style = {[globalStyles.appBodyFont, {marginBottom: 40, fontSize: 17, textAlign: 'center'}]}>Enter your email 
         and we will send you a link to reset your password </Text>
         <View style = {{alignItems: 'center', marginBottom: 20}}>
         <InvisText text = {'Email not found'} colour= {'red'} size = {17} disabled={!error}/>
         <InvisText text = {'Link Sent to your email!'} colour= {'black'} size = {15} disabled={!sent}/>
         </View>
-        <View style = {{marginBottom: 10, flexDirection: 'row'}}>
           <TextInput
-            style = {[globalStyles.userInputs, {marginBottom: 10, flex: 7}]}
+            style = {[globalStyles.userInputs, {marginBottom: 10}]}
             autoCapitalize='none' 
             placeholder='Email' 
             value={email}
             onChangeText={text => setEmail(text)} 
             onEndEditing={handleReset}
           />
-          <IconButton
-            style = {{flex: 1}}
-            icon='arrow-right'
-            onPress={() => handleReset()}
-          />
+          <FlatButton text='Proceed' onPress={() => handleReset()} />
         </View>
-        <FlatButton text = {'Back'} invert = {'n'} 
-          onPress={()=>{router.replace('/')}}/>
-      </View>
     </SafeAreaView>
   );
 }

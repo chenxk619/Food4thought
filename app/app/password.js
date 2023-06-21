@@ -5,7 +5,7 @@ import InvisText from '../custom/HiddenText';
 import { globalStyles } from '../styles/globalStyles';
 import { useRouter } from 'expo-router';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-
+import { IconButton } from 'react-native-paper'
 
 export default function Password( {navigation} ) {
   const router = useRouter();
@@ -45,17 +45,23 @@ export default function Password( {navigation} ) {
         <InvisText text = {'Email not found'} colour= {'red'} size = {17} disabled={!error}/>
         <InvisText text = {'Link Sent to your email!'} colour= {'black'} size = {15} disabled={!sent}/>
         </View>
-        <TextInput
-          style = {[globalStyles.userInputs, {marginBottom: 10}]}
-          autoCapitalize='none' 
-          placeholder='Email' 
-          value={email}
-          onChangeText={text => setEmail(text)} 
-          onEndEditing={handleReset}
-        />
+        <View style = {{marginBottom: 10, flexDirection: 'row'}}>
+          <TextInput
+            style = {[globalStyles.userInputs, {marginBottom: 10, flex: 7}]}
+            autoCapitalize='none' 
+            placeholder='Email' 
+            value={email}
+            onChangeText={text => setEmail(text)} 
+            onEndEditing={handleReset}
+          />
+          <IconButton
+            style = {{flex: 1}}
+            icon='arrow-right'
+            onPress={() => handleReset()}
+          />
+        </View>
         <FlatButton text = {'Back'} invert = {'n'} 
           onPress={()=>{router.replace('/')}}/>
-
       </View>
     </SafeAreaView>
   );

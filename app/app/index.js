@@ -5,7 +5,6 @@ import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { Link, useRouter } from 'expo-router';
-import { IconButton } from 'react-native-paper'
 
 export default function Login() {
   const [email, setEmail] = useState('');

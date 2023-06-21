@@ -68,10 +68,6 @@ export default function Login() {
               Sign Up
               </Link>
         </View>
-        <View style = {{flexDirection: 'row'}}>
-          <IconButton icon = {'google'}/>
-          <FlatButton text={'Sign In with Google'} onPress = {() => promptAsync()} invert={'y'} disabled={false}/>
-        </View>
       </View>
 
     </SafeAreaView>

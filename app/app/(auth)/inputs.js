@@ -1,10 +1,10 @@
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, TouchableWithoutFeedback, View , TextInput} from 'react-native';
 import FlatButton from '../../custom/Button';
 import { globalStyles } from '../../styles/globalStyles';
 import { auth } from "../../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'expo-router';
-import { FAB, TextInput, Card, IconButton } from 'react-native-paper';
+import { FAB, Card, IconButton } from 'react-native-paper';
 import { useState } from 'react';
 
 
@@ -89,6 +89,10 @@ export default function Inputs() {
             <TextInput style={{
               alignItems: 'center',
               width: '55%',
+              borderColor: '#999',
+              borderRadius: 15,
+              borderWidth: 1,
+              paddingHorizontal: 10,
               }}
               mode='outlined'
               placeholder='Add Ingredients '

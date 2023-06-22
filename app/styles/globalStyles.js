@@ -59,6 +59,11 @@ export const globalStyles = StyleSheet.create({
         margin: 5,
     },
 
+    dishesCard: {
+        width: 400,
+        padding: 5,
+        margin: 5,
+    },
     // ### Fonts ### //
 
     // --- Login --- //

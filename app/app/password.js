@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {SafeAreaView, Text, View, TextInput} from 'react-native';
 import FlatButton from '../custom/Button';
 import InvisText from '../custom/HiddenText';
@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { IconButton } from 'react-native-paper'
 
-export default function Password( {navigation} ) {
+export default function Password() {
   const router = useRouter();
   const auth = getAuth();
   const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ export default function Password( {navigation} ) {
         setSent(true);
       })
       .catch((error) => {
-        console.log("error");
+        console.log(error);
         setError(true);
       });
   }

@@ -61,7 +61,7 @@ export default function Login() {
 
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
-        <View style = {{flexDirection: 'row', marginBottom: 150}}>
+        <View style = {{flexDirection: 'row', marginTop: 200}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don't have an account?&nbsp;</Text>
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SafeAreaView, Text, View, TextInput, Alert } from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
@@ -11,7 +11,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const router = useRouter();
-
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -62,13 +61,12 @@ export default function Login() {
         <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', marginTop: 200}}>
-            <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don't have an account?&nbsp;</Text>
+            <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don&apos;t have an account?&nbsp;</Text>
             <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up
               </Link>
         </View>
       </View>
-
     </SafeAreaView>
   );
 }

@@ -5,13 +5,17 @@ import { auth } from "../../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'expo-router';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Review from './review';
+import DishesApp from './dishes';
 
-
-export default function Inputs() {
+function Inputs({ navigation }) {
   const router = useRouter();
   const [inputs, setInputs] = useState();
   const [ingredients, setIngredients] = useState([]);
+
 
   function Ingredient(props) {
     return (
@@ -32,7 +36,7 @@ export default function Inputs() {
       Keyboard.dismiss();
       setInputs("");
       if (ingredients.length > 10) {
-        Alert.alert(`Maximum of 5 Ingredients!`)
+        Alert.alert(`Maximum of 10 Ingredients!`)
         return
       }
       if (inputs === undefined || inputs === "") {
@@ -51,7 +55,7 @@ export default function Inputs() {
   const handleSignOut = () => {
     Keyboard.dismiss();
     signOut(auth).then(() => {
-      router.replace('/')
+      router.replace("/");
     })
     .catch(error => Alert.alert(error.message))
   }
@@ -78,13 +82,7 @@ export default function Inputs() {
         buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
           Logout
         </Button>
-
-        <Button style={{marginRight:15, marginTop:10,}} icon='arrow-right' mode='elevated' 
-        buttonColor='#111' textColor='white' onPress={routeDishes} compact={true} >
-          Dishes
-        </Button>
-        </View>
-
+        <Button onPress={() => navigation.navigate('DishesApp', {ingredients: ingredients})}>Dishes</Button>
         <Text style={[globalStyles.appMainTitle,{
           alignSelf: 'center',
           fontSize: 30, 
@@ -127,6 +125,7 @@ export default function Inputs() {
           </View>
         </View>
       </View>
+      </View>
       
       <View style={{flex:2.5}}>
       <ScrollView>
@@ -152,5 +151,26 @@ export default function Inputs() {
       </ScrollView>
       </View>
     </SafeAreaView>
+  );
+  }
+
+const Stack = createStackNavigator();
+
+const linking = {
+  prefixes: [
+  ],
+  config: {
+  },
+};
+
+export default function AppLayout() {
+  return (
+    <NavigationContainer linking={linking} independent={true}>
+      <Stack.Navigator>
+        <Stack.Screen name="Inputs" component={Inputs} options={{headerShown: false}}/>
+        <Stack.Screen name="DishesApp" component={DishesApp} options={{headerShown: false}}/>
+        <Stack.Screen name="Review" component={Review} options={{headerShown: false}}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

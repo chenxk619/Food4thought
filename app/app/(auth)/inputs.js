@@ -5,12 +5,11 @@ import { auth } from "../../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'expo-router';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export default function Inputs() {
   const router = useRouter();
-
   const [inputs, setInputs] = useState();
   const [ingredients, setIngredients] = useState([]);
 
@@ -26,11 +25,12 @@ export default function Inputs() {
               />
             )}
           />
-        </Card>
+      </Card>
     )
   }
   const addIngredient = () => {
       Keyboard.dismiss();
+      setInputs("");
       if (ingredients.length > 10) {
         Alert.alert(`Maximum of 5 Ingredients!`)
         return
@@ -40,7 +40,7 @@ export default function Inputs() {
       }
       else {
         setIngredients([...ingredients, inputs]);
-        setInputs("");
+        //setInputs("");
       }
   }
   const removeIngredient = (index) => {
@@ -55,12 +55,36 @@ export default function Inputs() {
     })
     .catch(error => Alert.alert(error.message))
   }
+  const routeDishes = () => {
+    if (ingredients.length > 0)
+    {
+      router.replace('./dishes');
+    }
+    else{
+      Alert.alert("Please input ingredients");
+    }
+  }
+  useEffect(() => {
+    setInputs("");
+    console.log(inputs);
+    }, [ingredients]);
+
   return (
     <SafeAreaView style={[globalStyles.container]} >
-        <Button style={{marginLeft:15, marginTop:10, alignSelf: 'flex-start'}} text='Logout' icon='arrow-left' mode='elevated' 
+      <View style={{flex:1}}>
+        
+        <View style = {{flexDirection:'row', justifyContent: 'space-between'}}>
+        <Button style={{marginLeft:15, marginTop:10, }} icon='arrow-left' mode='elevated' 
         buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
           Logout
         </Button>
+
+        <Button style={{marginRight:15, marginTop:10,}} icon='arrow-right' mode='elevated' 
+        buttonColor='#111' textColor='white' onPress={routeDishes} compact={true} >
+          Dishes
+        </Button>
+        </View>
+
         <Text style={[globalStyles.appMainTitle,{
           alignSelf: 'center',
           fontSize: 30, 
@@ -70,29 +94,11 @@ export default function Inputs() {
           }]}> 
           Ingredients 
         </Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? "padding" : null}
-        style={globalStyles.container}>
-        <ScrollView>
-          <View style={{ 
-            backgroundColor: '#fff', 
-            alignItems: 'center',
-            justifyContent: 'center',
-            }}>
-            {
-              ingredients.map((item, index) => {
-                return (
-                  <Ingredient key={index} value={index} text={item}/>
-                )
-              })
-            }
-          </View>
-        </ScrollView>
+
         <View style={[globalStyles.appBody, {
-          justifyContent: 'flex-end',
+          justifyContent: 'flex-start',
           backgroundColor: '#fff',
-          marginVertical: 10,
+          marginTop: 10,
           }]}>
           <View style={{flexDirection: 'row'}}>
             <TextInput style={{
@@ -107,7 +113,7 @@ export default function Inputs() {
               mode='outlined'
               placeholder='Add Ingredients '
               value={inputs} 
-              onChangeText={input => setInputs(input)}
+              onChangeText={inputs => setInputs(inputs)}
             />
             <FAB
               style={{
@@ -120,8 +126,31 @@ export default function Inputs() {
               />
           </View>
         </View>
+      </View>
+      
+      <View style={{flex:2.5}}>
+      <ScrollView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? "padding" : null}
+        style={globalStyles.container}>
+        <View style={{ 
+          backgroundColor: '#fff', 
+          justifyContent: 'center',
+          //flex : 7,
+          }}>
+          {
+            ingredients.map((item, index) => {
+              return (
+                <Ingredient key={index} value={index} text={item}/>
+              )
+            })
+          }
+        </View>
       </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

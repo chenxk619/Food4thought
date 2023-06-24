@@ -16,7 +16,6 @@ function Inputs({ navigation }) {
   const [inputs, setInputs] = useState();
   const [ingredients, setIngredients] = useState([]);
 
-
   function Ingredient(props) {
     return (
       <Card style={[globalStyles.ingredientsCard]}>
@@ -29,12 +28,11 @@ function Inputs({ navigation }) {
               />
             )}
           />
-      </Card>
+        </Card>
     )
   }
   const addIngredient = () => {
       Keyboard.dismiss();
-      setInputs("");
       if (ingredients.length > 10) {
         Alert.alert(`Maximum of 10 Ingredients!`)
         return
@@ -44,7 +42,7 @@ function Inputs({ navigation }) {
       }
       else {
         setIngredients([...ingredients, inputs]);
-        //setInputs("");
+        setInputs("");
       }
   }
   const removeIngredient = (index) => {
@@ -59,30 +57,23 @@ function Inputs({ navigation }) {
     })
     .catch(error => Alert.alert(error.message))
   }
-  const routeDishes = () => {
-    if (ingredients.length > 0)
-    {
-      router.replace('./dishes');
-    }
-    else{
-      Alert.alert("Please input ingredients");
-    }
-  }
-  useEffect(() => {
-    setInputs("");
-    console.log(inputs);
-    }, [ingredients]);
 
   return (
-    <SafeAreaView style={[globalStyles.container]} >
-      <View style={{flex:1}}>
+    <SafeAreaView style={[globalStyles.container, {backgroundColor: '#fff'}]} >
+      <View style = {{flex: 1}}>
         
-        <View style = {{flexDirection:'row', justifyContent: 'space-between'}}>
-        <Button style={{marginLeft:15, marginTop:10, }} icon='arrow-left' mode='elevated' 
-        buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
-          Logout
-        </Button>
-        <Button onPress={() => navigation.navigate('DishesApp', {ingredients: ingredients})}>Dishes</Button>
+        <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button style={{marginLeft:15, marginTop:10}} icon='arrow-left' mode='elevated' 
+          buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
+            Logout
+          </Button>
+          <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' 
+          buttonColor='#111' textColor='white' onPress={() => 
+          navigation.navigate('DishesApp', {ingredients: ingredients})} compact={true} >
+            Dishes
+          </Button>
+        </View>
+
         <Text style={[globalStyles.appMainTitle,{
           alignSelf: 'center',
           fontSize: 30, 
@@ -94,65 +85,64 @@ function Inputs({ navigation }) {
         </Text>
 
         <View style={[globalStyles.appBody, {
-          justifyContent: 'flex-start',
-          backgroundColor: '#fff',
-          marginTop: 10,
-          }]}>
+            justifyContent: 'flex-end',
+            backgroundColor: '#fff',
+            marginVertical: 10,
+            }]}>
           <View style={{flexDirection: 'row'}}>
-            <TextInput style={{
-              alignItems: 'center',
-              width: '70%',
-              borderColor: '#999',
-              borderRadius: 15,
-              borderWidth: 1,
-              paddingHorizontal: 10,
-              fontWeight: '600',
-              }}
-              mode='outlined'
-              placeholder='Add Ingredients '
-              value={inputs} 
-              onChangeText={inputs => setInputs(inputs)}
-            />
-            <FAB
-              style={{
-                margin: 4,
-                backgroundColor: '#888'
-              }}
-              color='white'
-              icon='plus'
-              onPress={()=> addIngredient()}
+              <TextInput style={{
+                alignItems: 'center',
+                width: '70%',
+                borderColor: '#999',
+                borderRadius: 15,
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                fontWeight: '600',
+                }}
+                mode='outlined'
+                placeholder='Add Ingredients '
+                value={inputs} 
+                onChangeText={input => setInputs(input)}
               />
+              <FAB
+                style={{
+                  margin: 4,
+                  backgroundColor: '#888'
+                }}
+                color='white'
+                icon='plus'
+                onPress={()=> addIngredient()}
+                />
           </View>
         </View>
       </View>
-      </View>
       
-      <View style={{flex:2.5}}>
-      <ScrollView>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? "padding" : null}
-        style={globalStyles.container}>
-        <View style={{ 
-          backgroundColor: '#fff', 
-          justifyContent: 'center',
-          //flex : 7,
-          }}>
-          {
-            ingredients.map((item, index) => {
-              return (
-                <Ingredient key={index} value={index} text={item}/>
-              )
-            })
-          }
-        </View>
-      </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
-      </ScrollView>
+
+      <View style = {{flex:2.5}}>
+        <ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? "padding" : null}
+          style={globalStyles.container}>
+            <View style={{ 
+              backgroundColor: '#fff', 
+              justifyContent: 'center',
+              }}>
+              {
+                ingredients.map((item, index) => {
+                  return (
+                    <Ingredient key={index} value={index} text={item}/>
+                  )
+                })
+              }
+            </View>
+        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
-  }
+}
 
 const Stack = createStackNavigator();
 

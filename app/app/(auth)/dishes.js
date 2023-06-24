@@ -4,17 +4,17 @@ import FlatButton from '../../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { globalStyles } from '../../styles/globalStyles';
-import { useRouter } from 'expo-router';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, and } from 'firebase/firestore';
 import { firestoredb } from '../../firebaseconfig';
 import { Drawer } from 'react-native-drawer-layout';
 import { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
+import { useRoute } from '@react-navigation/native'
 
 const FilterDrawerScreen = (props) => {
-  const [dessertsIsChecked, setDessertsIsChecked] = useState(false);
-  const [mainsIsChecked, setMainsIsChecked] = useState(false);
-  const [appetisersIsChecked, setAppetisersIsChecked] = useState(false);
+  const [dessertsIsChecked, setDessertsIsChecked] = useState(true);
+  const [mainsIsChecked, setMainsIsChecked] = useState(true);
+  const [appetisersIsChecked, setAppetisersIsChecked] = useState(true);
   const [open, setOpen] = useState(false);
   const [complexity, setComplexity] = useState(10);
   const [categories, setCategories] = useState([]);
@@ -72,10 +72,8 @@ const FilterDrawerScreen = (props) => {
       updatedCategories.push("Desserts");
     }
     setCategories(updatedCategories)
-  }
-  useEffect(() => {
     navigation.navigate('Dishes', { categories: categories, complexity: complexity });
-  }, [categories]);
+  }
 
   return (
     <DrawerContentScrollView scrollEnabled={false} style={{}} {...props}>
@@ -128,12 +126,15 @@ const DishCard = (props) => {
   )
 }
 
-const DishesScreen = ({ route }) => {
-  const router = useRouter();
+const DishesScreen = ({ route, navigation }) => {
+  const navRoute = useRoute();
   const dishesRef = collection(firestoredb, 'dishes')
   const [dishes, setDishes] = useState([]);
-  const { categories = [], complexity } = route.params;
-  console.log(categories)
+  const { categories } = route.params;
+  const ingredients = navRoute.params.ingredients
+  const lower = ingredients.map(element => {
+    return element.toLowerCase();
+  });
 
   useEffect(() => {
     if (categories === undefined || categories.length === 0) {
@@ -141,8 +142,8 @@ const DishesScreen = ({ route }) => {
       return;
     }
 
-    const q = query(dishesRef, (where("category", "in", categories)));
-  
+    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower))));
+
     getDocs(q)
       .then((querySnapshot) => {
         const updatedDishes = []; // Create a new array to store the updated dishes
@@ -175,10 +176,10 @@ const DishesScreen = ({ route }) => {
           justifyContent: 'flex-end'
         }}>
         <FlatButton text = {'Reviews'} invert = {'n'} 
-          onPress={() => {router.push('/review')}}
+          onPress={() => navigation.navigate("Review")}
           />
         <FlatButton text = {'Back'} invert = {'n'} 
-          onPress={() => router.replace('/inputs')}
+          onPress={() => navigation.navigate("Inputs")}
           />
         </View>
     </View>
@@ -187,30 +188,26 @@ const DishesScreen = ({ route }) => {
 
 const DrawerNav = createDrawerNavigator();
 
-const FilterDrawer = () => {
+export default function DishesApp() {
+  const route = useRoute()
+  const ingredients = route.params?.ingredients
+
   return (
-    <DrawerNav.Navigator
+    <SafeAreaProvider style={[globalStyles.container]}>
+      <DrawerNav.Navigator
     screenOptions={{
       drawerType: 'front',
     }}
       useLegacyImplementation
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation}/>}
     >
-      <DrawerNav.Screen name="Dishes" initialParams={{ categories: [], complexity: 10 }} component={DishesScreen} options={{
+      <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, categories: ["Appetisers", "Mains", "Desserts"], complexity: 10 }} component={DishesScreen} options={{
         headerTitleStyle: {
           ...globalStyles.appMainTitle,
           color: 'black',
         }
       }}/>
     </DrawerNav.Navigator>
-  );
-}
-
-export default function Dishes() {
-
-  return (
-    <SafeAreaProvider style={[globalStyles.container]}>
-      <FilterDrawer />
     </SafeAreaProvider>
   );
 }

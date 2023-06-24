@@ -1,10 +1,8 @@
 import {SafeAreaView, Text} from 'react-native';
-import { globalStyles } from '../../styles/globalStyles';
-import FlatButton from '../../custom/Button';
-import { useRouter } from 'expo-router';
+import { globalStyles } from '../styles/globalStyles';
+import FlatButton from '../custom/Button';
 
-export default function Review({ navigation }) {
-  const router = useRouter();
+export default function Reviews({ navigation }) {
 
   return (
     <SafeAreaView style={[globalStyles.appBody]}>

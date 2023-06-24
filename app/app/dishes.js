@@ -1,11 +1,11 @@
 import { View, ScrollView, Alert } from 'react-native';
 import { Text, Button, Checkbox, Card } from 'react-native-paper';
-import FlatButton from '../../custom/Button';
+import FlatButton from '../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { globalStyles } from '../../styles/globalStyles';
+import { globalStyles } from '../styles/globalStyles';
 import { collection, getDocs, query, where, and } from 'firebase/firestore';
-import { firestoredb } from '../../firebaseconfig';
+import { firestoredb } from '../firebaseconfig';
 import { Drawer } from 'react-native-drawer-layout';
 import { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
@@ -176,7 +176,7 @@ const DishesScreen = ({ route, navigation }) => {
           justifyContent: 'flex-end'
         }}>
         <FlatButton text = {'Reviews'} invert = {'n'} 
-          onPress={() => navigation.navigate("Review")}
+          onPress={() => navigation.navigate("Reviews")}
           />
         <FlatButton text = {'Back'} invert = {'n'} 
           onPress={() => navigation.navigate("Inputs")}

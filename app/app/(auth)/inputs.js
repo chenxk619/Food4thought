@@ -57,13 +57,23 @@ function Inputs({ navigation }) {
     })
     .catch(error => Alert.alert(error.message))
   }
+
   return (
-    <SafeAreaView style={[globalStyles.container]} >
-        <Button style={{marginLeft:15, marginTop:10, alignSelf: 'flex-start'}} text='Logout' icon='arrow-left' mode='elevated' 
-        buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
-          Logout
-        </Button>
-        <Button onPress={() => navigation.navigate('DishesApp', {ingredients: ingredients})}>Dishes</Button>
+    <SafeAreaView style={[globalStyles.container, {backgroundColor: '#fff'}]} >
+      <View style = {{flex: 1}}>
+        
+        <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button style={{marginLeft:15, marginTop:10}} icon='arrow-left' mode='elevated' 
+          buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
+            Logout
+          </Button>
+          <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' 
+          buttonColor='#111' textColor='white' onPress={() => 
+          navigation.navigate('DishesApp', {ingredients: ingredients})} compact={true} >
+            Dishes
+          </Button>
+        </View>
+
         <Text style={[globalStyles.appMainTitle,{
           alignSelf: 'center',
           fontSize: 30, 
@@ -73,58 +83,63 @@ function Inputs({ navigation }) {
           }]}> 
           Ingredients 
         </Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? "padding" : null}
-        style={globalStyles.container}>
-        <ScrollView>
-          <View style={{ 
-            backgroundColor: '#fff', 
-            alignItems: 'center',
-            justifyContent: 'center',
-            }}>
-            {
-              ingredients.map((item, index) => {
-                return (
-                  <Ingredient key={index} value={index} text={item}/>
-                )
-              })
-            }
-          </View>
-        </ScrollView>
+
         <View style={[globalStyles.appBody, {
-          justifyContent: 'flex-end',
-          backgroundColor: '#fff',
-          marginVertical: 10,
-          }]}>
+            justifyContent: 'flex-end',
+            backgroundColor: '#fff',
+            marginVertical: 10,
+            }]}>
           <View style={{flexDirection: 'row'}}>
-            <TextInput style={{
-              alignItems: 'center',
-              width: '70%',
-              borderColor: '#999',
-              borderRadius: 15,
-              borderWidth: 1,
-              paddingHorizontal: 10,
-              fontWeight: '600',
-              }}
-              mode='outlined'
-              placeholder='Add Ingredients '
-              value={inputs} 
-              onChangeText={input => setInputs(input)}
-            />
-            <FAB
-              style={{
-                margin: 4,
-                backgroundColor: '#888'
-              }}
-              color='white'
-              icon='plus'
-              onPress={()=> addIngredient()}
+              <TextInput style={{
+                alignItems: 'center',
+                width: '70%',
+                borderColor: '#999',
+                borderRadius: 15,
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                fontWeight: '600',
+                }}
+                mode='outlined'
+                placeholder='Add Ingredients '
+                value={inputs} 
+                onChangeText={input => setInputs(input)}
               />
+              <FAB
+                style={{
+                  margin: 4,
+                  backgroundColor: '#888'
+                }}
+                color='white'
+                icon='plus'
+                onPress={()=> addIngredient()}
+                />
           </View>
         </View>
-      </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+      </View>
+      
+
+      <View style = {{flex:2.5}}>
+        <ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? "padding" : null}
+          style={globalStyles.container}>
+            <View style={{ 
+              backgroundColor: '#fff', 
+              justifyContent: 'center',
+              }}>
+              {
+                ingredients.map((item, index) => {
+                  return (
+                    <Ingredient key={index} value={index} text={item}/>
+                  )
+                })
+              }
+            </View>
+        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

@@ -3,12 +3,10 @@ import {SafeAreaView, Text, View, TextInput} from 'react-native';
 import FlatButton from '../custom/Button';
 import InvisText from '../custom/HiddenText';
 import { globalStyles } from '../styles/globalStyles';
-import { useRouter } from 'expo-router';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { IconButton } from 'react-native-paper'
 
-export default function Password() {
-  const router = useRouter();
+export default function Password({ navigation }) {
   const auth = getAuth();
   const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
@@ -28,7 +26,7 @@ export default function Password() {
   return (
     <SafeAreaView style = {globalStyles.appBody}>
       <IconButton icon='arrow-left' size = {35} 
-        style={{flex:1, alignSelf:'flex-start', marginLeft: 20}} onPress={()=>{router.replace('/')}}/>
+        style={{flex:1, alignSelf:'flex-start', marginLeft: 20}} onPress={()=> navigation.navigate("Login")}/>
       <View style = {{flex : 9, paddingHorizontal:  15, marginHorizontal: 30, marginBottom: 150, justifyContent: 'center'}}>
         <IconButton icon='lock-reset' style = {{justifyContent:'flex-start' ,alignSelf:'center', marginBottom: 30}} size={70} />
         <Text style={[globalStyles.appMainTitle,{alignSelf: 'center', fontSize: 30, color: 'black', marginBottom: 20}]}> 

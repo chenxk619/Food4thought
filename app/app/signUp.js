@@ -2,15 +2,13 @@ import { SafeAreaView, Text, TextInput, View, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseconfig';
 import { globalStyles } from '../styles/globalStyles';
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import FlatButton from '../custom/Button';
 import { IconButton } from 'react-native-paper'
 
-export default function SignUp() {
+export default function SignUp({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -23,7 +21,7 @@ export default function SignUp() {
 
   return (
     <SafeAreaView style={globalStyles.appBody}>
-      <IconButton style = {{flex:1, alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {35} onPress={()=>{router.replace('/')}}/>
+      <IconButton style = {{flex:1, alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {35} onPress={()=> navigation.navigate("Login")}/>
       <View style={{flex:9 ,justifyContent:'center', marginBottom: 170}}>
         <IconButton icon='account-circle' style = {{justifyContent:'center' ,alignSelf:'center'}} size={70} />
         <Text

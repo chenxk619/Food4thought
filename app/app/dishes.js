@@ -1,4 +1,4 @@
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, Pressable } from 'react-native';
 import { Text, Button, Checkbox, Card } from 'react-native-paper';
 import FlatButton from '../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
@@ -137,11 +137,14 @@ const DishesScreen = ({ route, navigation }) => {
     return element.toLowerCase();
   });
 
-  console.log(complexity);
+  const handleReview = (instructions, title) => {
+    navigation.navigate('Reviews', {instructions: instructions, title: title});
+  }
 
   useEffect(() => {
     if (categories === undefined || categories.length === 0) {
       setDishes([]);
+      Alert.alert("No dishes found!")
       return;
     }
 
@@ -153,39 +156,48 @@ const DishesScreen = ({ route, navigation }) => {
         const finalDishes = [];
 
         querySnapshot.forEach((doc) => {
+          //console.log(doc.data());
           updatedDishes.push({
-            id: doc.id, // Add a unique identifier to each dish object
+            key: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
             category: doc.data().category,
             dish_complexity: doc.data().ingredients.length,
+            instructions: doc.data().directions,
           });
         });
+
         updatedDishes.forEach((dish) => {
         if (dish.dish_complexity < complexity + 1)
         {
           finalDishes.push(dish);
         }})
+        if (finalDishes.length == 0){
+          Alert.alert("No dishes found!")
+        }
 
         setDishes(finalDishes); // Update the dishes state with the new array
-      })
-      .catch((error) => {
-        Alert.alert.error("Error getting documents: ", error);
-      });
+        })
+        .catch((error) => {
+          Alert.alert.error("Error getting documents: ", error);
+        });
   }, [categories]);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ScrollView style={{flex: 1}}>
-        {
+          {
             dishes.map((item) => {
               return (
+                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title)} style={({pressed}) => [
+                  {backgroundColor: pressed ? '#aaa' : '#eee',}, {borderRadius: 10}]}> 
                 <DishCard key={item.key} text={item.title}/>
+                </Pressable>
               )
             })
           }
-          </ScrollView>
+        </ScrollView>
       <View style={{
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end', marginBottom: 10
         }}>
         <FlatButton text = {'Reviews'} invert = {'n'} 
           onPress={() => navigation.navigate("Reviews")}
@@ -193,7 +205,7 @@ const DishesScreen = ({ route, navigation }) => {
         <FlatButton text = {'Back'} invert = {'n'} 
           onPress={() => navigation.navigate("Inputs")}
           />
-        </View>
+      </View>
     </View>
   );
 }
@@ -213,7 +225,8 @@ export default function DishesApp() {
       useLegacyImplementation
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation}/>}
       >
-      <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, categories: ["Appetisers", "Mains", "Desserts"], complexity: 19 }} 
+      <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
+      categories: ["Appetisers", "Mains", "Desserts"], complexity: 19 }} 
       component={DishesScreen} options={{
         headerTitleStyle: {
           ...globalStyles.appMainTitle,

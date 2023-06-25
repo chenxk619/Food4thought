@@ -65,14 +65,14 @@ export default function Inputs({ navigation }) {
   return (
     <SafeAreaView style={[globalStyles.container, {backgroundColor: '#fff'}]} >
       <View style = {{flex: 1}}>
-        
+  
         <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button style={{marginLeft:15, marginTop:10}} icon='arrow-left' mode='elevated' 
+          <Button style={{marginLeft:15, marginTop:10}} icon='arrow-left' mode='elevated' contentStyle= {{paddingHorizontal: 5}}
           buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
             Logout
           </Button>
-          <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' 
-          buttonColor='#111' textColor='white' onPress={navDishes} compact={true} >
+          <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' contentStyle= {{paddingHorizontal: 5, 
+          flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={navDishes} compact={true} >
             Dishes
           </Button>
         </View>

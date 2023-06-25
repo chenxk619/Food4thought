@@ -59,7 +59,7 @@ export default function Login({ navigation }) {
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', marginTop: 200}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don&apos;t have an account?&nbsp;</Text>
-            <Pressable onPress={() => navigation.navigate("SignUp")}> 
+            <Pressable onPress={() => navigation.navigate("SignUp")}>
               <Text style = {{color:'blue', fontFamily: 'Futura-Medium',}}>Sign Up</Text>
               </Pressable>
         </View>

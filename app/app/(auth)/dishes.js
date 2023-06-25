@@ -16,8 +16,7 @@ const FilterDrawerScreen = (props) => {
   const [mainsIsChecked, setMainsIsChecked] = useState(true);
   const [appetisersIsChecked, setAppetisersIsChecked] = useState(true);
   const [open, setOpen] = useState(false);
-  const [complexity, setComplexity] = useState(10);
-  const [categories, setCategories] = useState([]);
+  const [complexity, setComplexity] = useState(19);
   const { navigation } = props;
   
   function CategoryFilter(props) {
@@ -60,6 +59,7 @@ const FilterDrawerScreen = (props) => {
         </View>
     )
   }
+
   function handleFilterSubmit() {
     const updatedCategories = []
     if (appetisersIsChecked) {
@@ -71,8 +71,8 @@ const FilterDrawerScreen = (props) => {
     if (dessertsIsChecked) {
       updatedCategories.push("Desserts");
     }
-    setCategories(updatedCategories)
-    navigation.navigate('Dishes', { categories: categories, complexity: complexity });
+    //setCategories(updatedCategories)
+    navigation.navigate('Dishes', { categories: updatedCategories, complexity: complexity });
   }
 
   return (
@@ -118,7 +118,7 @@ const FilterDrawerScreen = (props) => {
 
 const DishCard = (props) => {
   return (
-    <Card style={[globalStyles.dishesCard, {}]}>
+    <Card style={[globalStyles.dishesCard]}>
         <Card.Title
           title={props.text}
         />
@@ -131,10 +131,13 @@ const DishesScreen = ({ route, navigation }) => {
   const dishesRef = collection(firestoredb, 'dishes')
   const [dishes, setDishes] = useState([]);
   const { categories } = route.params;
+  const { complexity } = route.params;
   const ingredients = navRoute.params.ingredients
   const lower = ingredients.map(element => {
     return element.toLowerCase();
   });
+
+  console.log(complexity);
 
   useEffect(() => {
     if (categories === undefined || categories.length === 0) {
@@ -142,19 +145,28 @@ const DishesScreen = ({ route, navigation }) => {
       return;
     }
 
-    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower))));
+    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower)) ));
 
     getDocs(q)
       .then((querySnapshot) => {
         const updatedDishes = []; // Create a new array to store the updated dishes
-  
+        const finalDishes = [];
+
         querySnapshot.forEach((doc) => {
           updatedDishes.push({
             id: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
+            category: doc.data().category,
+            dish_complexity: doc.data().ingredients.length,
           });
         });
-        setDishes(updatedDishes); // Update the dishes state with the new array
+        updatedDishes.forEach((dish) => {
+        if (dish.dish_complexity < complexity + 1)
+        {
+          finalDishes.push(dish);
+        }})
+
+        setDishes(finalDishes); // Update the dishes state with the new array
       })
       .catch((error) => {
         Alert.alert.error("Error getting documents: ", error);
@@ -195,13 +207,14 @@ export default function DishesApp() {
   return (
     <SafeAreaProvider style={[globalStyles.container]}>
       <DrawerNav.Navigator
-    screenOptions={{
+      screenOptions={{
       drawerType: 'front',
-    }}
+      }}
       useLegacyImplementation
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation}/>}
-    >
-      <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, categories: ["Appetisers", "Mains", "Desserts"], complexity: 10 }} component={DishesScreen} options={{
+      >
+      <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, categories: ["Appetisers", "Mains", "Desserts"], complexity: 19 }} 
+      component={DishesScreen} options={{
         headerTitleStyle: {
           ...globalStyles.appMainTitle,
           color: 'black',

@@ -52,6 +52,16 @@ export default function Inputs({ navigation }) {
     .catch(error => Alert.alert(error.message))
   }
 
+  const navDishes = () => {
+    if (ingredients.length > 0)
+    {
+      navigation.navigate('DishesApp', {ingredients: ingredients});
+    }
+    else{
+      Alert.alert("Minimum of 1 ingredient");
+    }
+  }
+
   return (
     <SafeAreaView style={[globalStyles.container, {backgroundColor: '#fff'}]} >
       <View style = {{flex: 1}}>
@@ -62,8 +72,7 @@ export default function Inputs({ navigation }) {
             Logout
           </Button>
           <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' 
-          buttonColor='#111' textColor='white' onPress={() => 
-          navigation.navigate('DishesApp', {ingredients: ingredients})} compact={true} >
+          buttonColor='#111' textColor='white' onPress={navDishes} compact={true} >
             Dishes
           </Button>
         </View>

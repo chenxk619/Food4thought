@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { SafeAreaView, Text, View, TextInput, Alert } from 'react-native';
+import { SafeAreaView, Text, View, TextInput, Alert, Pressable } from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
-import { Link } from 'expo-router';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -60,12 +59,11 @@ export default function Login({ navigation }) {
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', marginTop: 200}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don&apos;t have an account?&nbsp;</Text>
-            <Link href="/signUp" style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
+            <Pressable onPress={() => navigation.navigate("SignUp")} style = {{color:'blue', fontFamily: 'Futura-Medium',}}> 
               Sign Up
-              </Link>
+              </Pressable>
         </View>
       </View>
-
     </SafeAreaView>
   );
 }

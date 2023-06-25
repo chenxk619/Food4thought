@@ -197,11 +197,8 @@ const DishesScreen = ({ route, navigation }) => {
           }
         </ScrollView>
       <View style={{
-          justifyContent: 'flex-end', marginBottom: 10
+          justifyContent: 'flex-end', marginBottom: 30
         }}>
-        <FlatButton text = {'Reviews'} invert = {'n'} 
-          onPress={() => navigation.navigate("Reviews")}
-          />
         <FlatButton text = {'Back'} invert = {'n'} 
           onPress={() => navigation.navigate("Inputs")}
           />

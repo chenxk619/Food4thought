@@ -137,8 +137,8 @@ const DishesScreen = ({ route, navigation }) => {
     return element.toLowerCase();
   });
 
-  const handleReview = (instructions, title) => {
-    navigation.navigate('Reviews', {instructions: instructions, title: title});
+  const handleReview = (instructions, title, dish_ingredient) => {
+    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient});
   }
 
   useEffect(() => {
@@ -156,13 +156,14 @@ const DishesScreen = ({ route, navigation }) => {
         const finalDishes = [];
 
         querySnapshot.forEach((doc) => {
-          //console.log(doc.data());
+          //console.log(doc.data().ingredients);
           updatedDishes.push({
             key: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
             category: doc.data().category,
             dish_complexity: doc.data().ingredients.length,
             instructions: doc.data().directions,
+            dish_ingredient: doc.data().ingredients,
           });
         });
 
@@ -188,8 +189,8 @@ const DishesScreen = ({ route, navigation }) => {
           {
             dishes.map((item) => {
               return (
-                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title)} style={({pressed}) => [
-                  {backgroundColor: pressed ? '#aaa' : '#eee',}, {borderRadius: 10}]}> 
+                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title, item.dish_ingredient)} 
+                  style={({pressed}) => [{backgroundColor: pressed ? '#aaa' : '#eee',}, {borderRadius: 10}]}> 
                 <DishCard key={item.key} text={item.title}/>
                 </Pressable>
               )

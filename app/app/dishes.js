@@ -133,12 +133,13 @@ const DishesScreen = ({ route, navigation }) => {
   const { categories } = route.params;
   const { complexity } = route.params;
   const ingredients = navRoute.params.ingredients
+
   const lower = ingredients.map(element => {
     return element.toLowerCase();
   });
 
-  const handleReview = (instructions, title, dish_ingredient) => {
-    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient});
+  const handleReview = (instructions, title, dish_ingredient, original_ingredient) => {
+    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, original_ingredient});
   }
 
   useEffect(() => {
@@ -189,7 +190,7 @@ const DishesScreen = ({ route, navigation }) => {
           {
             dishes.map((item) => {
               return (
-                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title, item.dish_ingredient)} 
+                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title, item.dish_ingredient, ingredients)} 
                   style={({pressed}) => [{backgroundColor: pressed ? '#aaa' : '#eee',}, {borderRadius: 10}]}> 
                 <DishCard key={item.key} text={item.title}/>
                 </Pressable>

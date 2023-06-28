@@ -133,6 +133,7 @@ const DishesScreen = ({ route, navigation }) => {
   const { categories } = route.params;
   const { complexity } = route.params;
   const ingredients = navRoute.params.ingredients
+  const matchAll = navRoute.params.matchAll
 
   const lower = ingredients.map(element => {
     return element.toLowerCase();
@@ -149,39 +150,87 @@ const DishesScreen = ({ route, navigation }) => {
       return;
     }
 
-    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower)) ));
+  if (!matchAll){
+  const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower)) ));
 
     getDocs(q)
       .then((querySnapshot) => {
         const updatedDishes = []; // Create a new array to store the updated dishes
-        const finalDishes = [];
 
         querySnapshot.forEach((doc) => {
-          //console.log(doc.data().ingredients);
-          updatedDishes.push({
+          const instance = {
             key: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
             category: doc.data().category,
             dish_complexity: doc.data().ingredients.length,
             instructions: doc.data().directions,
             dish_ingredient: doc.data().ingredients,
-          });
+          }
+
+          if (instance.dish_complexity < complexity + 1){
+          updatedDishes.push(instance);
+          }
         });
 
-        updatedDishes.forEach((dish) => {
-        if (dish.dish_complexity < complexity + 1)
-        {
-          finalDishes.push(dish);
-        }})
-        if (finalDishes.length == 0){
+        if (updatedDishes.length == 0){
           Alert.alert("No dishes found!")
         }
-
-        setDishes(finalDishes); // Update the dishes state with the new array
+        setDishes(updatedDishes); // Update the dishes state with the new array
         })
         .catch((error) => {
           Alert.alert.error("Error getting documents: ", error);
         });
+  }
+
+  else{
+
+  let tempDishes = [];
+  for (let i = 0; i < lower.length; i++){
+    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains" ,lower[i])) ));
+    getDocs(q)
+      .then((querySnapshot) => {
+        let updatedDishes = []; // Create a new array to store the updated dishes
+
+        querySnapshot.forEach((doc) => {
+          const instance = {
+            key: doc.id, // Add a unique identifier to each dish object
+            title: doc.data().title,
+            category: doc.data().category,
+            dish_complexity: doc.data().ingredients.length,
+            instructions: doc.data().directions,
+            dish_ingredient: doc.data().ingredients,
+          }
+
+          if (instance.dish_complexity < complexity + 1){
+
+            if (tempDishes.length > 0){
+              tempDishes.forEach((dish) => {
+                if (dish.title == instance.title){
+                  updatedDishes.push(instance);
+                }
+              })
+            }
+
+            //first instance to update dishes
+            if (tempDishes.length == 0){
+              updatedDishes.push(instance);
+            }
+          }
+        });
+
+        if (updatedDishes.length == 0){
+          Alert.alert("No dishes found!")
+        }
+
+        setDishes(updatedDishes); // Update the dishes state with the new array
+        tempDishes = updatedDishes;
+        //console.log(tempDishes);
+        })
+        .catch((error) => {
+          Alert.alert.error("Error getting documents: ", error);
+        });
+      }
+  }
   }, [categories]);
 
   return (
@@ -214,6 +263,7 @@ const DrawerNav = createDrawerNavigator();
 export default function DishesApp() {
   const route = useRoute()
   const ingredients = route.params?.ingredients
+  const matchAll = route.params?.matchAll
 
   return (
     <SafeAreaProvider style={[globalStyles.container]}>
@@ -225,7 +275,7 @@ export default function DishesApp() {
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation}/>}
       >
       <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
-      categories: ["Appetisers", "Mains", "Desserts"], complexity: 19 }} 
+      categories: ["Appetisers", "Mains", "Desserts"], complexity: 19, matchAll}} 
       component={DishesScreen} options={{
         headerTitleStyle: {
           ...globalStyles.appMainTitle,

@@ -1,14 +1,16 @@
 import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, 
-  TouchableWithoutFeedback, View , TextInput, ScrollView} from 'react-native';
+  TouchableWithoutFeedback, View , TextInput, ScrollView, Modal} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import { auth } from "../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Inputs({ navigation }) {
   const [inputs, setInputs] = useState();
   const [ingredients, setIngredients] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   function Ingredient(props) {
     return (
@@ -52,14 +54,19 @@ export default function Inputs({ navigation }) {
     .catch(error => Alert.alert(error.message))
   }
 
-  const navDishes = () => {
+  const setModal = () => {
     if (ingredients.length > 0)
     {
-      navigation.navigate('DishesApp', {ingredients: ingredients});
+      setModalVisible(!modalVisible)
     }
     else{
       Alert.alert("Minimum of 1 ingredient");
     }
+  }
+
+  const ModalNav = (matchAll) => {
+    setModalVisible(!modalVisible)
+    navigation.navigate('DishesApp', {ingredients: ingredients, matchAll: matchAll});
   }
 
   return (
@@ -72,7 +79,7 @@ export default function Inputs({ navigation }) {
             Logout
           </Button>
           <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' contentStyle= {{paddingHorizontal: 5, 
-          flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={navDishes} compact={true} >
+          flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={setModal} compact={true} >
             Dishes
           </Button>
         </View>
@@ -130,6 +137,48 @@ export default function Inputs({ navigation }) {
               backgroundColor: '#fff', 
               justifyContent: 'center',
               }}>
+
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <View style = {{flex: 1, alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center'}}>
+                    <View style = {[globalStyles.button, {marginTop: 30,backgroundColor: 'white', height: 300, width: 330}]}>
+                      
+                      <View style={{marginLeft: 20, flexDirection:'row', justifyContent:'flex-end'}}>
+                        <View style={{marginTop:20, flex:1, justifyContent:'flex-end'}}>
+                        <Text style={[globalStyles.appBodyFont, {textAlign:'center', fontSize:22, alignSelf:'flex-end',}]}>
+                          The dishes shown will contain:    
+                        </Text>
+                        </View>
+                        <View>
+                        <IconButton
+                          icon={'close'}
+                          onPress={() => setModalVisible(!modalVisible)}/>
+                        </View>
+                      </View>
+                      
+                      <View style={{flex:1, paddingBottom: 20, alignItems:'center',justifyContent:'center'}}>
+
+                        <TouchableOpacity onPress = {() => ModalNav(false)}>
+                          <View style={[globalStyles.userInputs, {backgroundColor:'#eee', height:50}]}>
+                          <Text style={[globalStyles.appBodyFont, {textAlign:'center'}]}>Any of the ingredients</Text>
+                          </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress = {() => ModalNav(true)}>
+                          <View style={[globalStyles.userInputs, {backgroundColor:'#eee', height:50}]}>
+                          <Text style={[globalStyles.appBodyFont, {textAlign:'center'}]}>All of the ingredients</Text>
+                          </View>
+                        </TouchableOpacity>
+
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
               {
                 ingredients.map((item, index) => {
                   return (

@@ -65,6 +65,13 @@ export const globalStyles = StyleSheet.create({
         padding: 5,
         margin: 5,
     },
+
+    // modal: {
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     backgroundColor: 'white',
+    //     bor
+    // },
     // ### Fonts ### //
 
     // --- Login --- //

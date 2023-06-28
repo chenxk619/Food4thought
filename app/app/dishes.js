@@ -72,7 +72,7 @@ const FilterDrawerScreen = (props) => {
       updatedCategories.push("Desserts");
     }
     //setCategories(updatedCategories)
-    navigation.navigate('Dishes', { categories: updatedCategories, complexity: complexity });
+    navigation.navigate('Dishes', { categories: updatedCategories, complexity: complexity, matchAll: props.initialParams });
   }
 
   return (
@@ -272,7 +272,7 @@ export default function DishesApp() {
       drawerType: 'front',
       }}
       useLegacyImplementation
-      drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation}/>}
+      drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation} initialParams={matchAll}/>}
       >
       <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
       categories: ["Appetisers", "Mains", "Desserts"], complexity: 19, matchAll}} 

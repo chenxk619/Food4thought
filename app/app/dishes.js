@@ -212,19 +212,20 @@ const DishesScreen = ({ route, navigation }) => {
             }
 
             //first instance to update dishes
-            if (tempDishes.length == 0){
+            if (tempDishes.length == 0 && i != lower.length - 1){
               updatedDishes.push(instance);
             }
           }
         });
 
-        if (updatedDishes.length == 0){
+        if (updatedDishes.length == 0 && i == lower.length - 1){
           Alert.alert("No dishes found!")
         }
 
-        setDishes(updatedDishes); // Update the dishes state with the new array
+        if (i == lower.length - 1){
+        setDishes(updatedDishes);
+        } // Update the dishes state with the new array
         tempDishes = updatedDishes;
-        //console.log(tempDishes);
         })
         .catch((error) => {
           Alert.alert.error("Error getting documents: ", error);

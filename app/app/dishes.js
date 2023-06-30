@@ -10,6 +10,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { useRoute } from '@react-navigation/native'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const FilterDrawerScreen = (props) => {
   const [dessertsIsChecked, setDessertsIsChecked] = useState(true);
@@ -17,8 +18,9 @@ const FilterDrawerScreen = (props) => {
   const [appetisersIsChecked, setAppetisersIsChecked] = useState(true);
   const [open, setOpen] = useState(false);
   const [complexity, setComplexity] = useState(19);
+  const [selectAll, setSelectAll] = useState(props.matchAll);
   const { navigation } = props;
-  
+
   function CategoryFilter(props) {
     const { title, checked, onPress} = props;
 
@@ -61,6 +63,7 @@ const FilterDrawerScreen = (props) => {
   }
 
   function handleFilterSubmit() {
+
     const updatedCategories = []
     if (appetisersIsChecked) {
       updatedCategories.push("Appetisers");
@@ -71,8 +74,14 @@ const FilterDrawerScreen = (props) => {
     if (dessertsIsChecked) {
       updatedCategories.push("Desserts");
     }
-    //setCategories(updatedCategories)
-    navigation.navigate('Dishes', { categories: updatedCategories, complexity: complexity, matchAll: props.initialParams });
+    
+    navigation.navigate('Dishes', { ingredients: props.ingredients, categories: updatedCategories, complexity: complexity, matchAll: selectAll });
+  }
+
+  const handleSelect = () => {
+    setSelectAll(!selectAll);
+    props.matchAll = !props.matchAll;
+    props.redundancy = !props.redundancy;
   }
 
   return (
@@ -101,16 +110,25 @@ const FilterDrawerScreen = (props) => {
             />
           <Text style={[globalStyles.appBodyFont, {padding: 10, paddingTop: 20}]}>Complexity</Text>
           <ComplexityFilter />
+          <View style={{flex:1, marginHorizontal: 10, marginTop: 30, flexDirection:'row', alignItems: 'center'}}>
+            <Text style={[globalStyles.appBodyFont]}>Filter mode:</Text>
+            <TouchableOpacity activeOpacity={0.6} onPress={handleSelect}>
+            <Button style={{marginLeft:15}} mode='elevated' contentStyle= {{paddingHorizontal: 2}}
+            buttonColor='#111' compact={true} > 
+            <Text style={{color: 'white', fontSize:12, fontFamily: 'Futura'}}>{selectAll ? 'Match All': 'Match Any'} </Text>
+            </Button>
+            </TouchableOpacity>
+          </View>
+
           <Button
-            mode='contained'
-            buttonColor='#33e'
-            onPress={handleFilterSubmit}
+            mode='contained' buttonColor='#111' icon='magnify' onPress={handleFilterSubmit}
             style={{
               alignSelf: 'flex-start',
-              margin: 10
+              marginVertical: 20,
+              marginHorizontal: 10,
               }}>
             Filter
-            </Button>
+          </Button>
         </Drawer>
     </DrawerContentScrollView>
   );
@@ -201,18 +219,20 @@ const DishesScreen = ({ route, navigation }) => {
             dish_ingredient: doc.data().ingredients,
           }
 
+          //To check for complexity
           if (instance.dish_complexity < complexity + 1){
 
+            //for i > 0 (second iteration)
             if (tempDishes.length > 0){
               tempDishes.forEach((dish) => {
-                if (dish.title == instance.title){
+                if (dish == instance.title){
                   updatedDishes.push(instance);
                 }
               })
             }
 
             //first instance to update dishes
-            if (tempDishes.length == 0 && i != lower.length - 1){
+            if (tempDishes.length == 0 && i == 0){
               updatedDishes.push(instance);
             }
           }
@@ -222,10 +242,12 @@ const DishesScreen = ({ route, navigation }) => {
           Alert.alert("No dishes found!")
         }
 
+        updatedDishes.forEach((dish) => 
+        {tempDishes.push(dish.title)})
+
         if (i == lower.length - 1){
-        setDishes(updatedDishes);
-        } // Update the dishes state with the new array
-        tempDishes = updatedDishes;
+          setDishes(updatedDishes);
+          } // Update the dishes state with the new array
         })
         .catch((error) => {
           Alert.alert.error("Error getting documents: ", error);
@@ -248,13 +270,13 @@ const DishesScreen = ({ route, navigation }) => {
             })
           }
         </ScrollView>
+      <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate("Inputs")}>
       <View style={{
           justifyContent: 'flex-end', marginBottom: 30
         }}>
-        <FlatButton text = {'Back'} invert = {'n'} 
-          onPress={() => navigation.navigate("Inputs")}
-          />
+        <FlatButton text = {'Back'} invert = {'n'} />
       </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -273,7 +295,8 @@ export default function DishesApp() {
       drawerType: 'front',
       }}
       useLegacyImplementation
-      drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation} initialParams={matchAll}/>}
+      drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation} 
+      matchAll={matchAll} ingredients={ingredients}/>}
       >
       <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
       categories: ["Appetisers", "Mains", "Desserts"], complexity: 19, matchAll}} 
@@ -281,6 +304,7 @@ export default function DishesApp() {
         headerTitleStyle: {
           ...globalStyles.appMainTitle,
           color: 'black',
+          marginBottom: 15,
         }
       }}/>
     </DrawerNav.Navigator>

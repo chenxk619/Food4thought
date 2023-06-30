@@ -4,7 +4,7 @@ import { globalStyles } from '../styles/globalStyles';
 import { auth } from "../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Inputs({ navigation }) {
@@ -163,13 +163,13 @@ export default function Inputs({ navigation }) {
                       
                       <View style={{flex:1, paddingBottom: 20, alignItems:'center',justifyContent:'center'}}>
 
-                        <TouchableOpacity onPress = {() => ModalNav(false)}>
+                        <TouchableOpacity activeOpacity={0.6} onPress = {() => ModalNav(false)}>
                           <View style={[globalStyles.userInputs, {backgroundColor:'#eee', height:50}]}>
                           <Text style={[globalStyles.appBodyFont, {textAlign:'center'}]}>Any of the ingredients</Text>
                           </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress = {() => ModalNav(true)}>
+                        <TouchableOpacity activeOpacity={0.6} onPress = {() => ModalNav(true)}>
                           <View style={[globalStyles.userInputs, {backgroundColor:'#eee', height:50}]}>
                           <Text style={[globalStyles.appBodyFont, {textAlign:'center'}]}>All of the ingredients</Text>
                           </View>

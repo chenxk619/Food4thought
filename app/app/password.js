@@ -5,6 +5,7 @@ import InvisText from '../custom/HiddenText';
 import { globalStyles } from '../styles/globalStyles';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { IconButton } from 'react-native-paper'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Password({ navigation }) {
   const auth = getAuth();
@@ -18,7 +19,7 @@ export default function Password({ navigation }) {
         setError(false);
         setSent(true);
       })
-      .catch((error) => {
+      .catch(() => {
         setError(true);
       });
   }
@@ -46,7 +47,9 @@ export default function Password({ navigation }) {
             onChangeText={text => setEmail(text)} 
             onEndEditing={handleReset}
           />
-          <FlatButton text='Proceed' onPress={() => handleReset()} />
+          <TouchableOpacity activeOpacity={0.6} onPress={() => handleReset()}>
+          <FlatButton text='Proceed'/>
+          </TouchableOpacity>
         </View>
     </SafeAreaView>
   );

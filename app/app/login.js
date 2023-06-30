@@ -4,6 +4,7 @@ import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -55,7 +56,9 @@ export default function Login({ navigation }) {
           secureTextEntry
         />
 
-        <FlatButton text={'Sign In'} onPress={handleLogin} invert={'n'} disabled={false}/>
+        <TouchableOpacity activeOpacity={0.6} onPress={handleLogin}>
+        <FlatButton text={'Sign In'} invert={'n'} disabled={false}/>
+        </TouchableOpacity>
         <FlatButton text={'Forget Password'} onPress={handlePassword} invert={'y'} disabled={false}/>
         <View style = {{flexDirection: 'row', marginTop: 200}}>
             <Text style = {[globalStyles.appBodyFont, {fontSize: 15}]}>Don&apos;t have an account?&nbsp;</Text>

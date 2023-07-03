@@ -5,8 +5,11 @@ import { globalStyles } from '../styles/globalStyles';
 import { useState } from 'react';
 import FlatButton from '../custom/Button';
 import { IconButton } from 'react-native-paper'
+import {LinearGradient} from 'expo-linear-gradient'
+import {Dimensions} from 'react-native';
 
 export default function SignUp({ navigation }) {
+  const windowHeight = Dimensions.get('window').height;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,6 +24,8 @@ export default function SignUp({ navigation }) {
 
   return (
     <SafeAreaView style={globalStyles.appBody}>
+      <LinearGradient style={{ position: 'absolute', left: 0,right: 0, bottom: 0, height: windowHeight,
+         }}colors={['rbga(0,0,0,0.3)', 'transparent']}/>
       <IconButton style = {{flex:1, alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {35} onPress={()=> navigation.navigate("Login")}/>
       <View style={{flex:9 ,justifyContent:'center', marginBottom: 170}}>
         <IconButton icon='account-circle' style = {{justifyContent:'center' ,alignSelf:'center'}} size={70} />
@@ -45,7 +50,7 @@ export default function SignUp({ navigation }) {
           value={password}
           onChangeText={text => setPassword(text)} 
           />
-        <FlatButton text='Sign Up' onPress={handleSignUp} invert='n'/>
+        <FlatButton text='Sign Up' onPress={handleSignUp} bgColor={'black'} textColor={'white'}/>
       </View>
     </SafeAreaView>
   );

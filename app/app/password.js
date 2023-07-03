@@ -6,8 +6,11 @@ import { globalStyles } from '../styles/globalStyles';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { IconButton } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {LinearGradient} from 'expo-linear-gradient'
+import {Dimensions} from 'react-native';
 
 export default function Password({ navigation }) {
+  const windowHeight = Dimensions.get('window').height;
   const auth = getAuth();
   const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
@@ -26,6 +29,8 @@ export default function Password({ navigation }) {
 
   return (
     <SafeAreaView style = {globalStyles.appBody}>
+      <LinearGradient style={{ position: 'absolute', left: 0,right: 0, bottom: 0, height: windowHeight,
+         }}colors={['rbga(0,0,0,0.3)', 'transparent']}/>
       <IconButton icon='arrow-left' size = {35} 
         style={{flex:1, alignSelf:'flex-start', marginLeft: 20}} onPress={()=> navigation.navigate("Login")}/>
       <View style = {{flex : 9, paddingHorizontal:  15, marginHorizontal: 30, marginBottom: 150, justifyContent: 'center'}}>
@@ -48,7 +53,7 @@ export default function Password({ navigation }) {
             onEndEditing={handleReset}
           />
           <TouchableOpacity activeOpacity={0.6} onPress={() => handleReset()}>
-          <FlatButton text='Proceed'/>
+          <FlatButton text='Proceed' bgColor={'black'} textColor={'white'}/>
           </TouchableOpacity>
         </View>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import { View, ScrollView, Alert, Pressable } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Text, Button, Checkbox, Card } from 'react-native-paper';
 import FlatButton from '../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
@@ -262,10 +262,10 @@ const DishesScreen = ({ route, navigation }) => {
           {
             dishes.map((item) => {
               return (
-                <Pressable key = {item.key} onPress={() => handleReview(item.instructions, item.title, item.dish_ingredient, ingredients)} 
-                  style={({pressed}) => [{backgroundColor: pressed ? '#aaa' : '#eee',}, {borderRadius: 10}]}> 
+                <TouchableOpacity key = {item.key} activeOpacity={0.6} onPress={() => 
+                handleReview(item.instructions, item.title, item.dish_ingredient, ingredients)} > 
                 <DishCard key={item.key} text={item.title}/>
-                </Pressable>
+                </TouchableOpacity>
               )
             })
           }
@@ -274,7 +274,7 @@ const DishesScreen = ({ route, navigation }) => {
       <View style={{
           justifyContent: 'flex-end', marginBottom: 30
         }}>
-        <FlatButton text = {'Back'} invert = {'n'} />
+        <FlatButton text = {'Back'} bgColor={'black'} textColor={'white'}/>
       </View>
       </TouchableOpacity>
     </View>

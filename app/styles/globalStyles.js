@@ -21,25 +21,20 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    appLogin: {
-        flex: 8,
-        backgroundColor: '#eee',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-
     // ### Components ### //
 
     // --- Login --- //
     userInputs: {
-        borderColor: '#777',
+        borderColor: '#fff',
         borderRadius: 15,
+        borderWidth: 1,
         padding: 12, 
         margin: 10, 
         width: 280,
         backgroundColor: 'white',
+        shadowColor:'#aaa',
         shadowRadius: 3,
-        shadowOpacity: 0.3, 
+        shadowOpacity: 0.5, 
         shadowOffset: {width: 0, height: 5},
     },
 
@@ -50,6 +45,12 @@ export const globalStyles = StyleSheet.create({
         padding: 5,
         margin: 10, 
         width: 280,
+    },
+
+    logIn: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     // --- Input --- //

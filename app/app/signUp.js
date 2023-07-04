@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, TextInput, View, Alert } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, Alert, ImageBackground } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseconfig';
 import { globalStyles } from '../styles/globalStyles';
@@ -6,10 +6,8 @@ import { useState } from 'react';
 import FlatButton from '../custom/Button';
 import { IconButton } from 'react-native-paper'
 import {LinearGradient} from 'expo-linear-gradient'
-import {Dimensions} from 'react-native';
 
 export default function SignUp({ navigation }) {
-  const windowHeight = Dimensions.get('window').height;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,16 +16,20 @@ export default function SignUp({ navigation }) {
     .then(() => {
       // Signed in 
       // const user = userCredential.user;
+      Alert.alert("User created")
     })
     .catch((error) => Alert.alert(error.message))
   };
 
   return (
     <SafeAreaView style={globalStyles.appBody}>
-      <LinearGradient style={{ position: 'absolute', left: 0,right: 0, bottom: 0, height: windowHeight,
-         }}colors={['rbga(0,0,0,0.3)', 'transparent']}/>
+    <ImageBackground source={require('../assets/food4thought_bg_light.jpg')}
+    resizeMode="cover" style={{flex:1, justifyContent:'center', height:'100%', width:'100%'}}>
       <IconButton style = {{flex:1, alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {35} onPress={()=> navigation.navigate("Login")}/>
-      <View style={{flex:9 ,justifyContent:'center', marginBottom: 170}}>
+      
+      <View style={{flex:9 ,justifyContent:'center', marginBottom: 170, alignItems:'center'}}>
+      <LinearGradient colors={['rgba(220, 220, 220, 0.4)' ,'rgba(220, 220, 220, 0.4)']} start={{x: 0, y: 0 }} end={{x: 1, y: 1 }} 
+          style={{paddingVertical:10, paddingHorizontal:15, borderRadius:20, flex:0.9}}>
         <IconButton icon='account-circle' style = {{justifyContent:'center' ,alignSelf:'center'}} size={70} />
         <Text
           style = {[globalStyles.appBodyFont, {
@@ -50,8 +52,13 @@ export default function SignUp({ navigation }) {
           value={password}
           onChangeText={text => setPassword(text)} 
           />
+        <View style = {{marginBottom:20}}></View>
         <FlatButton text='Sign Up' onPress={handleSignUp} bgColor={'black'} textColor={'white'}/>
+
+      </LinearGradient>
       </View>
+      
+      </ImageBackground>
     </SafeAreaView>
   );
 }

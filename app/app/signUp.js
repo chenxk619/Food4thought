@@ -22,13 +22,13 @@ export default function SignUp({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={globalStyles.appBody}>
-    <ImageBackground source={require('../assets/food4thought_bg_light.jpg')}
+    <SafeAreaView style = {[globalStyles.appBody, {backgroundColor:'white'}]}>
+    <ImageBackground source={require('../assets/bg1_colour.jpeg')}
     resizeMode="cover" style={{flex:1, justifyContent:'center', height:'100%', width:'100%'}}>
       <IconButton style = {{flex:1, alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {35} onPress={()=> navigation.navigate("Login")}/>
       
       <View style={{flex:9 ,justifyContent:'center', marginBottom: 170, alignItems:'center'}}>
-      <LinearGradient colors={['rgba(220, 220, 220, 0.4)' ,'rgba(220, 220, 220, 0.4)']} start={{x: 0, y: 0 }} end={{x: 1, y: 1 }} 
+      <LinearGradient colors={['rgba(220, 220, 220, 0.6)' ,'rgba(220, 220, 220, 0.6)']} start={{x: 0, y: 0 }} end={{x: 1, y: 1 }} 
           style={{paddingVertical:10, paddingHorizontal:15, borderRadius:20, flex:0.9}}>
         <IconButton icon='account-circle' style = {{justifyContent:'center' ,alignSelf:'center'}} size={70} />
         <Text

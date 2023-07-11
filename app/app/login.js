@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, Text, View, TextInput, Alert, Pressable, Image, ImageBackground} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import FlatButton from '../custom/Button';
@@ -25,11 +25,12 @@ export default function Login({ navigation }) {
     navigation.navigate("Password");
   }
 
-  return (
-    <SafeAreaView style = {globalStyles.container}>
+  const clearCreds =  React.useCallback(()=> {handleLogin(); setEmail(''); setPassword('')}, [email, password]);
 
+  return (
+    <SafeAreaView style = {[globalStyles.container, {backgroundColor:'white'}]}>
       <View style={globalStyles.appBody}>
-      <ImageBackground source={require('../assets/food4thought_bg_light.jpg')}
+      <ImageBackground source={require('../assets/bg1.jpg')}
     resizeMode="cover" style={{flex:1, justifyContent:'center', height:'100%', width:'100%'}}>
 
       <View style = {{flex:1 ,justifyContent:'center', alignItems:'center'}}>
@@ -68,7 +69,7 @@ export default function Login({ navigation }) {
             secureTextEntry
           />
 
-          <TouchableOpacity activeOpacity={0.6} onPress={handleLogin}>
+          <TouchableOpacity activeOpacity={0.6} onPress={clearCreds}>
           <FlatButton text={'Sign In'} disabled={false} bgColor={'black'} textColor={'white'}/>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} onPress={handlePassword}>

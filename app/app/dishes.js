@@ -1,4 +1,4 @@
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, ImageBackground} from 'react-native';
 import { Text, Button, Checkbox, Card } from 'react-native-paper';
 import FlatButton from '../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { useRoute } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {LinearGradient} from 'expo-linear-gradient'
+import { color } from 'react-native-reanimated';
 
 const FilterDrawerScreen = (props) => {
   const [dessertsIsChecked, setDessertsIsChecked] = useState(true);
@@ -136,10 +138,14 @@ const FilterDrawerScreen = (props) => {
 
 const DishCard = (props) => {
   return (
-    <Card style={[globalStyles.dishesCard]}>
+    <Card style={[globalStyles.dishesCard, {padding:0}]}>
+        <LinearGradient colors={['rgba(100,200,0, 0.5)' ,'rgba(190,237,83,0.4)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
+          style={{paddingVertical:10, paddingHorizontal:0, borderRadius:10}}>
         <Card.Title
+          titleStyle = {{fontFamily:'Futura', fontSize: 16, textAlign:'center'}}
           title={props.text}
         />
+        </LinearGradient>
       </Card>
   )
 }
@@ -257,8 +263,16 @@ const DishesScreen = ({ route, navigation }) => {
   }, [categories]);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ScrollView style={{flex: 1}}>
+    <SafeAreaProvider style={[globalStyles.container, {backgroundColor:'white',
+      justifyContent: 'center', alignItems: 'center'}]}>
+      <ImageBackground source={require('../assets/bg2_colour2.jpg')}
+        resizeMode="cover" style={{flex:1, marginTop:50, justifyContent:'center', height:'100%', width:'100%'}}>
+      <View style={{flex:0.1, justifyContent:'center', alignItems:'center'}}>
+        <Text style={[globalStyles.appMainTitle, {color:'black'}]}>Dishes</Text>
+      </View>
+
+      <View style={{flex:1, alignItems:'center'}}>
+        <ScrollView style={{flex: 9}}>
           {
             dishes.map((item) => {
               return (
@@ -270,14 +284,16 @@ const DishesScreen = ({ route, navigation }) => {
             })
           }
         </ScrollView>
-      <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate("Inputs")}>
-      <View style={{
-          justifyContent: 'flex-end', marginBottom: 30
-        }}>
-        <FlatButton text = {'Back'} bgColor={'black'} textColor={'white'}/>
-      </View>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate("Inputs")}>
+        <View style={{
+            justifyContent: 'flex-end', marginBottom: 30,
+          }}>
+          <FlatButton text = {'Back'} bgColor={'black'} textColor={'white'}/>
+        </View>
+        </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </SafeAreaProvider>
   );
 }
 
@@ -293,6 +309,9 @@ export default function DishesApp() {
       <DrawerNav.Navigator
       screenOptions={{
       drawerType: 'front',
+      drawerStyle: {
+        backgroundColor: 'white'
+      },
       }}
       useLegacyImplementation
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation} 
@@ -301,6 +320,8 @@ export default function DishesApp() {
       <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
       categories: ["Appetisers", "Mains", "Desserts"], complexity: 19, matchAll}} 
       component={DishesScreen} options={{
+        headerTransparent: true,
+        headerStyle : {height:0, backgroundColor:'red'},
         headerTitleStyle: {
           ...globalStyles.appMainTitle,
           color: 'black',

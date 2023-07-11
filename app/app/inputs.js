@@ -1,11 +1,14 @@
+import React from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, 
-  TouchableWithoutFeedback, View , TextInput, ScrollView, Modal} from 'react-native';
+  TouchableWithoutFeedback, View , TextInput, ScrollView, Modal, ImageBackground} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import { auth } from "../firebaseconfig"
 import { signOut } from 'firebase/auth';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {LinearGradient} from 'expo-linear-gradient'
+
 
 export default function Inputs({ navigation }) {
   const [inputs, setInputs] = useState();
@@ -14,8 +17,11 @@ export default function Inputs({ navigation }) {
 
   function Ingredient(props) {
     return (
-      <Card style={[globalStyles.ingredientsCard]}>
+      <Card style={{flex:0.1, marginHorizontal:30, marginVertical:5, backgroundColor:'white', shadowColor:'black', shadowRadius:2}}>
+          <LinearGradient colors={['rgba(247,152,98, 0.5)' ,'rgba(247,152,98, 0.5)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
+          style={{paddingVertical:10, paddingHorizontal:15, borderRadius:10, flex:0.75}}>
           <Card.Title
+            titleStyle = {[globalStyles.appBodyFont, {fontWeight:'500', textAlign:'left'}]}
             title={props.text}
             right={() => (
               <IconButton
@@ -24,7 +30,8 @@ export default function Inputs({ navigation }) {
               />
             )}
           />
-        </Card>
+        </LinearGradient>
+      </Card>
     )
   }
   const addIngredient = () => {
@@ -38,9 +45,11 @@ export default function Inputs({ navigation }) {
       }
       else {
         setIngredients([...ingredients, inputs]);
-        setInputs("");
       }
   }
+
+  const clearInput =  React.useCallback(()=> {setInputs('')}, []);
+
   const removeIngredient = (index) => {
     let ingredientsCopy = [...ingredients];
     ingredientsCopy.splice(index, 1);
@@ -70,7 +79,9 @@ export default function Inputs({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={[globalStyles.container, {backgroundColor: '#fff'}]} >
+    <SafeAreaView style = {[globalStyles.appBody, {backgroundColor:'white'}]}>
+      <ImageBackground source={require('../assets/bg2_colour.jpeg')}
+        resizeMode="cover" style={{flex:1, justifyContent:'center', height:'100%', width:'100%'}}>
       <View style = {{flex: 1}}>
   
         <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -84,45 +95,23 @@ export default function Inputs({ navigation }) {
           </Button>
         </View>
 
-        <Text style={[globalStyles.appMainTitle,{
-          alignSelf: 'center',
-          fontSize: 30, 
-          color: 'black',
-          paddingBottom: 10,
-          marginVertical: 10,
-          }]}> 
+        <Text style={[globalStyles.appMainTitle,{ alignSelf: 'center', fontSize: 30, color: 'black', paddingBottom: 10,
+          marginVertical: 10,}]}> 
           Ingredients 
         </Text>
 
-        <View style={[globalStyles.appBody, {
-            justifyContent: 'flex-end',
-            backgroundColor: '#fff',
-            marginVertical: 10,
-            }]}>
+        <View style={[globalStyles.appBody, { justifyContent: 'flex-end', backgroundColor: 'transparent', marginVertical: 10,}]}>
           <View style={{flexDirection: 'row'}}>
-              <TextInput style={{
-                alignItems: 'center',
-                width: '70%',
-                borderColor: '#999',
-                borderRadius: 15,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                fontWeight: '600',
-                }}
-                mode='outlined'
-                placeholder='Add Ingredients '
-                value={inputs} 
-                onChangeText={input => setInputs(input)}
+              <TextInput style={{alignItems: 'center', width: '70%', borderColor: '#999', borderRadius: 15, borderWidth: 1,
+                paddingHorizontal: 10, fontWeight: '600', backgroundColor:'white' }} mode='outlined' placeholder='Add Ingredients '
+                value={inputs} onChangeText={inputs => setInputs(inputs)} ref={input => { this.textInput = input }}
               />
+              <IconButton
+              icon={'close'} onPress={clearInput} style={{position: 'absolute',right: 65,top:6}}/>
+              <TouchableOpacity activeOpacity={0.6} onPress={addIngredient}>
               <FAB
-                style={{
-                  margin: 4,
-                  backgroundColor: '#888'
-                }}
-                color='white'
-                icon='plus'
-                onPress={()=> addIngredient()}
-                />
+                style={{ margin: 4, backgroundColor: 'black'}} color='white' icon='plus'/>
+              </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -134,7 +123,6 @@ export default function Inputs({ navigation }) {
           behavior={Platform.OS === 'ios' ? "padding" : null}
           style={globalStyles.container}>
             <View style={{ 
-              backgroundColor: '#fff', 
               justifyContent: 'center',
               }}>
 
@@ -191,6 +179,7 @@ export default function Inputs({ navigation }) {
         </TouchableWithoutFeedback>
         </ScrollView>
       </View>
+    </ImageBackground>
     </SafeAreaView>
   );
 }

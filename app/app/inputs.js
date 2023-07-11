@@ -2,13 +2,10 @@ import React from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, 
   TouchableWithoutFeedback, View , TextInput, ScrollView, Modal, ImageBackground} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
-import { auth } from "../firebaseconfig"
-import { signOut } from 'firebase/auth';
 import { FAB, Card, Button, IconButton} from 'react-native-paper';
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {LinearGradient} from 'expo-linear-gradient'
-
 
 export default function Inputs({ navigation }) {
   const [inputs, setInputs] = useState();
@@ -55,13 +52,6 @@ export default function Inputs({ navigation }) {
     ingredientsCopy.splice(index, 1);
     setIngredients(ingredientsCopy);
   }
-  const handleSignOut = () => {
-    Keyboard.dismiss();
-    signOut(auth).then(() => {
-      navigation.navigate("Login");
-    })
-    .catch(error => Alert.alert(error.message))
-  }
 
   const setModal = () => {
     if (ingredients.length > 0)
@@ -85,12 +75,12 @@ export default function Inputs({ navigation }) {
       <View style = {{flex: 1}}>
   
         <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button style={{marginLeft:15, marginTop:10}} icon='arrow-left' mode='elevated' contentStyle= {{paddingHorizontal: 5}}
-          buttonColor='#fff' textColor='black' onPress={handleSignOut} compact={true} >
-            Logout
-          </Button>
-          <Button style={{marginRight:15, marginTop:10}} icon='arrow-right' mode='elevated' contentStyle= {{paddingHorizontal: 5, 
-          flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={setModal} compact={true} >
+
+          <IconButton style = {{alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {30} 
+          onPress={()=> navigation.navigate("Main")}/>
+
+          <Button style={{marginRight:15, marginTop:10, height:40, width: 105}} icon='arrow-right' mode='elevated' contentStyle= {{paddingHorizontal: 5, 
+          flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={setModal} compact={false} >
             Dishes
           </Button>
         </View>

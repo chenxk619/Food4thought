@@ -16,7 +16,7 @@ export default function Login({ navigation }) {
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        navigation.navigate("Inputs")
+        navigation.navigate("Main")
       })
       .catch((error) => Alert.alert(error.message))
     };

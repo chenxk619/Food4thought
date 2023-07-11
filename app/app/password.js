@@ -14,7 +14,7 @@ export default function Password({ navigation }) {
   const auth = getAuth();
   const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
-  const [sent, setSent] =useState(false);
+  const [sent, setSent] = useState(false);
 
   const handleReset = () => {
     sendPasswordResetEmail(auth, email)

@@ -12,7 +12,6 @@ import Slider from '@react-native-community/slider';
 import { useRoute } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {LinearGradient} from 'expo-linear-gradient'
-import { color } from 'react-native-reanimated';
 
 const FilterDrawerScreen = (props) => {
   const [dessertsIsChecked, setDessertsIsChecked] = useState(true);
@@ -139,7 +138,7 @@ const FilterDrawerScreen = (props) => {
 const DishCard = (props) => {
   return (
     <Card style={[globalStyles.dishesCard, {padding:0}]}>
-        <LinearGradient colors={['rgba(100,200,0, 0.5)' ,'rgba(190,237,83,0.4)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
+        <LinearGradient colors={['rgba(100,200,0,0.4)' ,'rgba(100,200,0,0.4)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
           style={{paddingVertical:10, paddingHorizontal:0, borderRadius:10}}>
         <Card.Title
           titleStyle = {{fontFamily:'Futura', fontSize: 16, textAlign:'center'}}

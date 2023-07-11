@@ -1,6 +1,6 @@
 import { SafeAreaView, Text, TextInput, View, Alert, ImageBackground } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseconfig';
+import { auth, firebaseApp } from '../firebaseconfig';
 import { globalStyles } from '../styles/globalStyles';
 import { useState } from 'react';
 import FlatButton from '../custom/Button';
@@ -16,6 +16,7 @@ export default function SignUp({ navigation }) {
     .then(() => {
       // Signed in 
       // const user = userCredential.user;
+      
       Alert.alert("User created")
     })
     .catch((error) => Alert.alert(error.message))
@@ -52,6 +53,7 @@ export default function SignUp({ navigation }) {
           value={password}
           onChangeText={text => setPassword(text)} 
           />
+
         <View style = {{marginBottom:20}}></View>
         <FlatButton text='Sign Up' onPress={handleSignUp} bgColor={'black'} textColor={'white'}/>
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, 
   TouchableWithoutFeedback, View , TextInput, ScrollView, Modal, ImageBackground} from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
@@ -6,11 +6,85 @@ import { FAB, Card, Button, IconButton} from 'react-native-paper';
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {LinearGradient} from 'expo-linear-gradient'
+import { collection, getDocs, addDoc, updateDoc, doc} from 'firebase/firestore';
+import { auth, firestoredb } from "../firebaseconfig"
+
+let backup = []
 
 export default function Inputs({ navigation }) {
-  const [inputs, setInputs] = useState();
+  const [inputs, setInputs] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [found, setFound] = useState(false)
+  const [dishesRendered, setDishesRendered] = useState(10)
+  const userId = auth.currentUser.uid
+
+  //Only for initial render of ingredients
+  useEffect(() => {
+    //Check if user is already in collection
+    getDocs(collection(firestoredb, "saved_ingredients"))
+    .then((querySnapshot)=>{         
+        const newData = querySnapshot.docs
+            .map((doc) => ({...doc.data(), id:doc.id }));
+                    
+        //If found user account
+        newData.forEach((elem) => 
+            {   
+              if (elem.userId == userId){
+              setFound(true)
+              //Load from backend
+              setIngredients(elem.ingredient)
+              ingredients.forEach((item) =>{
+                backup.push(item)
+              })
+              }
+            })
+        })
+
+    //Check if user is already in collection
+    getDocs(collection(firestoredb, "name"))
+    .then((querySnapshot)=>{         
+        const newData = querySnapshot.docs
+            .map((doc) => ({...doc.data(), id:doc.id }));
+                    
+        //If found then reset name
+
+            newData.forEach((elem) => 
+            {   if (elem.userId == auth.currentUser.uid){
+                  setDishesRendered(Number(elem.render))
+            }})})
+      }
+ ,[])
+
+  const saveIngredient = () => {
+    getDocs(collection(firestoredb, "saved_ingredients"))
+    .then((querySnapshot)=>{       
+      if (found){  
+        const newData = querySnapshot.docs
+            .map((doc) => ({...doc.data(), id:doc.id }));
+        newData.forEach((elem) => 
+            {   
+              if (elem.userId == userId){
+              //Update the array on backend
+              const docRef = doc(firestoredb, "saved_ingredients", elem.id);
+              updateDoc(docRef, {
+                ingredient: backup
+              })
+            }
+            })
+        }})
+
+    //If not then create new name
+    if (!found){
+      const doc_Ref = addDoc(collection(firestoredb, "saved_ingredients"), {
+          ingredient: backup,   
+          userId: userId
+      })
+      setFound(true)
+      console.log("Document written with ID: ", doc_Ref.id)
+    }
+    
+  }
 
   function Ingredient(props) {
     return (
@@ -23,7 +97,7 @@ export default function Inputs({ navigation }) {
             right={() => (
               <IconButton
                 icon={'delete'}
-                onPress={() => removeIngredient(props.value)}
+                onPress={() => {removeIngredient(props.value); saveIngredient()}}
               />
             )}
           />
@@ -31,6 +105,7 @@ export default function Inputs({ navigation }) {
       </Card>
     )
   }
+
   const addIngredient = () => {
       Keyboard.dismiss();
       if (ingredients.length > 10) {
@@ -40,8 +115,17 @@ export default function Inputs({ navigation }) {
       if (inputs === undefined || inputs === "") {
         Alert.alert(`Please key in a valid input!`)
       }
-      else {
-        setIngredients([...ingredients, inputs]);
+      else{
+        let duplicate = false
+        ingredients.forEach((item) => {
+          if (item == inputs){
+            duplicate = true
+          }
+        })
+        if (!duplicate){
+          setIngredients([...ingredients, inputs]);
+          backup.push(inputs)
+        }
       }
   }
 
@@ -51,6 +135,9 @@ export default function Inputs({ navigation }) {
     let ingredientsCopy = [...ingredients];
     ingredientsCopy.splice(index, 1);
     setIngredients(ingredientsCopy);
+    if (backup.length != 0){
+      backup.splice(index, 1);
+    }
   }
 
   const setModal = () => {
@@ -65,7 +152,8 @@ export default function Inputs({ navigation }) {
 
   const ModalNav = (matchAll) => {
     setModalVisible(!modalVisible)
-    navigation.navigate('DishesApp', {ingredients: ingredients, matchAll: matchAll});
+    console.log(dishesRendered)
+    navigation.navigate('DishesApp', {ingredients: ingredients, matchAll: matchAll, dishesRendered: dishesRendered});
   }
 
   return (
@@ -98,7 +186,7 @@ export default function Inputs({ navigation }) {
               />
               <IconButton
               icon={'close'} onPress={clearInput} style={{position: 'absolute',right: 65,top:6}}/>
-              <TouchableOpacity activeOpacity={0.6} onPress={addIngredient}>
+              <TouchableOpacity activeOpacity={0.6} onPress={() => {addIngredient();saveIngredient()}}>
               <FAB
                 style={{ margin: 4, backgroundColor: 'black'}} color='white' icon='plus'/>
               </TouchableOpacity>

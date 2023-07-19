@@ -72,7 +72,7 @@ export default function MainPage( {navigation} ) {
 
                     <Card style={{ flex:1, marginHorizontal:25, marginBottom:30, backgroundColor:'white', 
                     shadowColor:'black', shadowRadius:2, marginLeft:15}}>                        
-                        <TouchableOpacity activeOpacity={0.8}>                       
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => {navigation.navigate('Saved')}}>                       
                         <LinearGradient colors={['rgba(247,152,98, 0.5)' ,'rgba(247,152,98, 0.5)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
                             style={{height: 160, paddingVertical:10, paddingHorizontal:15, borderRadius:10}}>
                             <IconButton style={{justifyContent:'center', alignSelf:'center'}}icon={'heart'} size={70}/>

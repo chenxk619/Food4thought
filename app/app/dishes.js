@@ -1,22 +1,31 @@
-import { View, ScrollView, Alert, ImageBackground} from 'react-native';
+import {useRef} from 'react'
+import { View, ScrollView, Alert, ImageBackground, Image} from 'react-native';
 import { Text, Button, Checkbox, Card } from 'react-native-paper';
 import FlatButton from '../custom/Button';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { globalStyles } from '../styles/globalStyles';
-import { collection, getDocs, query, where, and } from 'firebase/firestore';
-import { firestoredb } from '../firebaseconfig';
+import { collection, getDocs, query, where, and, limit, orderBy, startAfter, documentId} from 'firebase/firestore';
+import { auth, firestoredb } from '../firebaseconfig';
 import { Drawer } from 'react-native-drawer-layout';
 import { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { useRoute } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {LinearGradient} from 'expo-linear-gradient'
+import { IconButton } from 'react-native-paper'
 
+//"Starters & nibbles", "Main course", "Cakes and baking", "Desserts", "Drinks and cocktails", 
+//"Light meals & snacks", "Side dishes", "Other"
 const FilterDrawerScreen = (props) => {
-  const [dessertsIsChecked, setDessertsIsChecked] = useState(true);
-  const [mainsIsChecked, setMainsIsChecked] = useState(true);
-  const [appetisersIsChecked, setAppetisersIsChecked] = useState(true);
+  const [starters, setStarters] = useState(false)
+  const [mains, setMains] = useState(true)
+  const [sides, setSides] = useState(false)
+  const [cakes, setCakes] = useState(false)
+  const [lights, setLights] =useState(false)
+  const [desserts, setDesserts] = useState(false)
+  const [drinks, setDrinks] = useState(false)
+  const [others, setOthers] = useState(false)
+
   const [open, setOpen] = useState(false);
   const [complexity, setComplexity] = useState(19);
   const [selectAll, setSelectAll] = useState(props.matchAll);
@@ -66,17 +75,33 @@ const FilterDrawerScreen = (props) => {
   function handleFilterSubmit() {
 
     const updatedCategories = []
-    if (appetisersIsChecked) {
-      updatedCategories.push("Appetisers");
+    if (starters) {
+      updatedCategories.push("Starters & nibbles");
     }
-    if (mainsIsChecked) {
-      updatedCategories.push("Mains");
+    if (mains) {
+      updatedCategories.push("Main course");
     }
-    if (dessertsIsChecked) {
+    if (sides) {
+      updatedCategories.push("Side dishes");
+    }
+    if (cakes) {
+      updatedCategories.push("Cakes and baking");
+    }
+    if (lights) {
+      updatedCategories.push("Light meals & snacks");
+    }
+    if (desserts) {
       updatedCategories.push("Desserts");
     }
-    
-    navigation.navigate('Dishes', { ingredients: props.ingredients, categories: updatedCategories, complexity: complexity, matchAll: selectAll });
+    if (drinks) {
+      updatedCategories.push("Drinks and cocktails");
+    }
+    if (others) {
+      updatedCategories.push("Other");
+    }
+
+    navigation.navigate('Dishes', { ingredients: props.ingredients, categories: updatedCategories, complexity: complexity, 
+      matchAll: selectAll, image: props.image});
   }
 
   const handleSelect = () => {
@@ -84,6 +109,7 @@ const FilterDrawerScreen = (props) => {
     props.matchAll = !props.matchAll;
     props.redundancy = !props.redundancy;
   }
+
 
   return (
     <DrawerContentScrollView scrollEnabled={false} style={{}} {...props}>
@@ -94,23 +120,65 @@ const FilterDrawerScreen = (props) => {
         renderDrawerContent={() => {
         }}>
           <Text style={[globalStyles.appBodyFont, {padding: 10}]}>Category</Text>
+
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginRight:50}}>
           <CategoryFilter
-            title={`Appetisers`}
-            checked={appetisersIsChecked}
-            onPress={() => setAppetisersIsChecked(!appetisersIsChecked)}
-            />
+          title={`Appetisers`}
+          checked={starters}
+          onPress={() => setStarters(!starters)}
+          />
+
           <CategoryFilter
-            title={`Mains`}
-            checked={mainsIsChecked}
-            onPress={() => setMainsIsChecked(!mainsIsChecked)}
-            />
+          title={`Mains`}
+          checked={mains}
+          onPress={() => setMains(!mains)}
+          />
+          </View>
+
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginLeft:33, marginRight:50}}>
           <CategoryFilter
-            title={`Desserts`}
-            checked={dessertsIsChecked}
-            onPress={() => setDessertsIsChecked(!dessertsIsChecked)}
-            />
+          title={`Sides`}
+          checked={sides}
+          onPress={() => setSides(!sides)}
+          />
+
+          <CategoryFilter
+          title={`Cakes`}
+          checked={cakes}
+          onPress={() => setCakes(!cakes)}
+          />
+          </View>
+
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginLeft:22, marginRight:50}}>
+          <CategoryFilter
+          title={`Snacks`}
+          checked={lights}
+          onPress={() => setLights(!lights)}
+          />
+
+          <CategoryFilter
+          title={`Desserts`}
+          checked={desserts}
+          onPress={() => setDesserts(!desserts)}
+          />
+          </View>
+
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginLeft:27, marginRight:50}}>
+          <CategoryFilter
+          title={`Drinks`}
+          checked={drinks}
+          onPress={() => setDrinks(!drinks)}
+          />
+
+          <CategoryFilter
+          title={`Others`}
+          checked={others}
+          onPress={() => setOthers(!others)}
+          />
+          </View>
+
           <Text style={[globalStyles.appBodyFont, {padding: 10, paddingTop: 20}]}>Complexity</Text>
-          <ComplexityFilter />
+          <ComplexityFilter/>
           <View style={{flex:1, marginHorizontal: 10, marginTop: 30, flexDirection:'row', alignItems: 'center'}}>
             <Text style={[globalStyles.appBodyFont]}>Filter mode:</Text>
             <TouchableOpacity activeOpacity={0.6} onPress={handleSelect}>
@@ -137,34 +205,58 @@ const FilterDrawerScreen = (props) => {
 
 const DishCard = (props) => {
   return (
-    <Card style={[globalStyles.dishesCard, {padding:0}]}>
-        <LinearGradient colors={['rgba(100,200,0,0.4)' ,'rgba(100,200,0,0.4)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
-          style={{paddingVertical:10, paddingHorizontal:0, borderRadius:10}}>
+    <Card style={[globalStyles.dishesCard, {borderRadius:20, height:290, width: 330, padding:0, marginHorizontal: 30,}]}>
+        <Image style = {{justifyContent:'center', alignSelf:'center', borderTopRightRadius:20, borderTopLeftRadius:20, 
+        width:330, height:240}} source = {props.image == '' ? require('../assets/food4thought_logo.png') : {uri: props.image}}/>
         <Card.Title
           titleStyle = {{fontFamily:'Futura', fontSize: 16, textAlign:'center'}}
           title={props.text}
         />
-        </LinearGradient>
+
       </Card>
   )
 }
 
 const DishesScreen = ({ route, navigation }) => {
   const navRoute = useRoute();
-  const dishesRef = collection(firestoredb, 'dishes')
+  const dishesRef = collection(firestoredb, 'Recipe3')
   const [dishes, setDishes] = useState([]);
   const { categories } = route.params;
   const { complexity } = route.params;
   const ingredients = navRoute.params.ingredients
   const matchAll = navRoute.params.matchAll
+  let dishesRendered = navRoute.params.dishesRendered
+  if (!dishesRendered){
+    dishesRendered = 10
+  }
+  const [firstItem, setFirstItem] = useState('0')
+  const [bottom, setBottom] = useState(true)
+  let [bottomed, setBottomed] = useState(false)
+  const scrollRef = useRef();
+  
 
+  //convert ingredients to lower case
   const lower = ingredients.map(element => {
     return element.toLowerCase();
   });
 
-  const handleReview = (instructions, title, dish_ingredient, original_ingredient) => {
-    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, original_ingredient});
+  //To handle each dishes' page (review page)
+  const handleReview = (instructions, title, dish_ingredient, ingredient_str, original_ingredient, image) => {
+    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, 
+      ingredient_str: ingredient_str, original_ingredient, image: image, fromSaved: false});
   }
+
+  //Detect when the user is close to bottom and 
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const paddingToBottom = 5;
+    setBottomed(true)
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
 
   useEffect(() => {
     if (categories === undefined || categories.length === 0) {
@@ -173,27 +265,45 @@ const DishesScreen = ({ route, navigation }) => {
       return;
     }
 
+  //For match any ingredients 
   if (!matchAll){
-  const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains-any", lower)) ));
+
+  let q;
+
+  //If scrolled to bottom
+  if (bottomed){
+  q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains-any", lower))), 
+  orderBy(documentId()), startAfter(firstItem), limit(dishesRendered));
+  setBottomed(false)
+  }
+  
+  //If app didnt hit bottom nor hit a refresh
+  else{
+    q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains-any", lower))), 
+    orderBy(documentId()), startAfter('0'), limit(dishesRendered));
+  }
 
     getDocs(q)
       .then((querySnapshot) => {
         const updatedDishes = []; // Create a new array to store the updated dishes
 
         querySnapshot.forEach((doc) => {
+          setFirstItem(doc.id)
           const instance = {
             key: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
             category: doc.data().category,
-            dish_complexity: doc.data().ingredients.length,
+            dish_complexity: doc.data().array.length,
             instructions: doc.data().directions,
-            dish_ingredient: doc.data().ingredients,
+            dish_ingredient: doc.data().array,
+            ingredient_str: doc.data().ingredients,
+            image : doc.data().image,
           }
 
           if (instance.dish_complexity < complexity + 1){
           updatedDishes.push(instance);
           }
-        });
+        })
 
         if (updatedDishes.length == 0){
           Alert.alert("No dishes found!")
@@ -208,20 +318,41 @@ const DishesScreen = ({ route, navigation }) => {
   else{
 
   let tempDishes = [];
+  let q;
+
   for (let i = 0; i < lower.length; i++){
-    const q = query(dishesRef, and(where("category", "in", categories), (where("ingredients", "array-contains" ,lower[i])) ));
+
+    //If scrolled to bottom
+    if (bottomed){
+      q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
+      orderBy(documentId()), startAfter(firstItem), limit(dishesRendered));
+      setBottomed(false)
+      }
+    
+    //If app didnt hit bottom nor hit a refresh
+    else{
+      q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
+      orderBy(documentId()), startAfter('0'), limit(dishesRendered));
+    }
+
+    // const q = query(dishesRef, and(where("category", "in", categories), (where("array", "array-contains" ,lower[i])) ), 
+    // orderBy(documentId()), startAfter(firstItem), limit(10));
+   
     getDocs(q)
       .then((querySnapshot) => {
         let updatedDishes = []; // Create a new array to store the updated dishes
 
         querySnapshot.forEach((doc) => {
+          setFirstItem(doc.id)
           const instance = {
             key: doc.id, // Add a unique identifier to each dish object
             title: doc.data().title,
             category: doc.data().category,
-            dish_complexity: doc.data().ingredients.length,
+            dish_complexity: doc.data().array.length,
             instructions: doc.data().directions,
-            dish_ingredient: doc.data().ingredients,
+            dish_ingredient: doc.data().array,
+            ingredient_str: doc.data().ingredients,
+            image : doc.data().image,
           }
 
           //To check for complexity
@@ -259,29 +390,43 @@ const DishesScreen = ({ route, navigation }) => {
         });
       }
   }
-  }, [categories]);
+  }, [categories, bottom]);
 
   return (
-    <SafeAreaProvider style={[globalStyles.container, {backgroundColor:'white',
-      justifyContent: 'center', alignItems: 'center'}]}>
-      <ImageBackground source={require('../assets/bg2_colour2.jpg')}
-        resizeMode="cover" style={{flex:1, marginTop:50, justifyContent:'center', height:'100%', width:'100%'}}>
-      <View style={{flex:0.1, justifyContent:'center', alignItems:'center'}}>
-        <Text style={[globalStyles.appMainTitle, {color:'black'}]}>Dishes</Text>
+    <SafeAreaProvider style={[globalStyles.appBody, {backgroundColor:'white'}]}>
+      <ImageBackground source={require('../assets/bg1.jpg')}
+        resizeMode="cover" style={{flex:1, height:'100%', width:'100%', alignItems:'center'}}>
+
+      <View style={{marginTop:20, marginBottom:20, marginLeft:'60%', width: '90%', flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start'}}>
+        <View style={{ marginTop:40, marginLeft:10}}>
+          <Text style={[globalStyles.appMainTitle, {color:'black'}]}>Dishes</Text>
+        </View>
+        <View style={{flex:1}}>
+        <IconButton icon='home' size = {35} style={{flex:1,marginTop:20, marginRight:20, alignSelf:'center'}} 
+        onPress={() => navigation.navigate("Main")}/>
+        </View>
       </View>
 
-      <View style={{flex:1, alignItems:'center'}}>
-        <ScrollView style={{flex: 9}}>
+        <ScrollView ref={scrollRef} style={{flex: 9}}
+        onMomentumScrollEnd={({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent)) {
+             setBottom(!bottom)
+          }
+        }}
+        scrollEventThrottle={500}
+        >
+        
           {
             dishes.map((item) => {
               return (
                 <TouchableOpacity key = {item.key} activeOpacity={0.6} onPress={() => 
-                handleReview(item.instructions, item.title, item.dish_ingredient, ingredients)} > 
-                <DishCard key={item.key} text={item.title}/>
+                handleReview(item.instructions, item.title, item.dish_ingredient, item.ingredient_str, ingredients, item.image)} > 
+                <DishCard key={item.key} text={item.title} image={item.image}/>
                 </TouchableOpacity>
               )
             })
           }
+
         </ScrollView>
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate("Inputs")}>
         <View style={{
@@ -290,11 +435,13 @@ const DishesScreen = ({ route, navigation }) => {
           <FlatButton text = {'Back'} bgColor={'black'} textColor={'white'}/>
         </View>
         </TouchableOpacity>
-        </View>
+
+
       </ImageBackground>
     </SafeAreaProvider>
   );
 }
+
 
 const DrawerNav = createDrawerNavigator();
 
@@ -302,6 +449,7 @@ export default function DishesApp() {
   const route = useRoute()
   const ingredients = route.params?.ingredients
   const matchAll = route.params?.matchAll
+  const dishesRendered = route.params?.dishesRendered
 
   return (
     <SafeAreaProvider style={[globalStyles.container]}>
@@ -314,13 +462,14 @@ export default function DishesApp() {
       }}
       useLegacyImplementation
       drawerContent={(props) => <FilterDrawerScreen {...props} navigation={props.navigation} 
-      matchAll={matchAll} ingredients={ingredients}/>}
+      matchAll={matchAll} ingredients={ingredients} style={{marginTop:30}} />}
       >
+
       <DrawerNav.Screen name="Dishes" initialParams={{ ingredients, 
-      categories: ["Appetisers", "Mains", "Desserts"], complexity: 19, matchAll}} 
+      categories: ["Main course"], complexity: 19, matchAll, dishesRendered}} 
       component={DishesScreen} options={{
         headerTransparent: true,
-        headerStyle : {height:0, backgroundColor:'red'},
+        headerStyle : {height:0, backgroundColor:'white'},
         headerTitleStyle: {
           ...globalStyles.appMainTitle,
           color: 'black',

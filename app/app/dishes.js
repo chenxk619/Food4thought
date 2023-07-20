@@ -229,6 +229,7 @@ const DishesScreen = ({ route, navigation }) => {
   if (!dishesRendered){
     dishesRendered = 10
   }
+  const [render, setRender] = useState(dishesRendered)
   const [firstItem, setFirstItem] = useState('0')
   const [bottom, setBottom] = useState(true)
   let [bottomed, setBottomed] = useState(false)
@@ -241,9 +242,10 @@ const DishesScreen = ({ route, navigation }) => {
   });
 
   //To handle each dishes' page (review page)
-  const handleReview = (instructions, title, dish_ingredient, ingredient_str, original_ingredient, image) => {
-    navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, 
-      ingredient_str: ingredient_str, original_ingredient, image: image, fromSaved: false});
+  const handleReview = (instructions, title, dish_ingredient, ingredient_str, original_ingredient, image, category, prep_time,
+    cook_time, serves) => { navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, 
+      ingredient_str: ingredient_str, original_ingredient, image: image, fromSaved: false, prep_time: prep_time, 
+      cook_time: cook_time, serves: serves, category: category});
   }
 
   //Detect when the user is close to bottom and 
@@ -273,14 +275,14 @@ const DishesScreen = ({ route, navigation }) => {
   //If scrolled to bottom
   if (bottomed){
   q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains-any", lower))), 
-  orderBy(documentId()), startAfter(firstItem), limit(dishesRendered));
+  orderBy(documentId()), startAfter(firstItem), limit(render));
   setBottomed(false)
   }
   
   //If app didnt hit bottom nor hit a refresh
   else{
     q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains-any", lower))), 
-    orderBy(documentId()), startAfter('0'), limit(dishesRendered));
+    orderBy(documentId()), startAfter('0'), limit(render));
   }
 
     getDocs(q)
@@ -298,6 +300,9 @@ const DishesScreen = ({ route, navigation }) => {
             dish_ingredient: doc.data().array,
             ingredient_str: doc.data().ingredients,
             image : doc.data().image,
+            prep_time : doc.data().prepTime,
+            cook_time : doc.data().cookingTime,
+            serves : doc.data().serves,
           }
 
           if (instance.dish_complexity < complexity + 1){
@@ -325,14 +330,14 @@ const DishesScreen = ({ route, navigation }) => {
     //If scrolled to bottom
     if (bottomed){
       q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
-      orderBy(documentId()), startAfter(firstItem), limit(dishesRendered));
+      orderBy(documentId()), startAfter(firstItem), limit(render));
       setBottomed(false)
       }
     
     //If app didnt hit bottom nor hit a refresh
     else{
       q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
-      orderBy(documentId()), startAfter('0'), limit(dishesRendered));
+      orderBy(documentId()), startAfter('0'), limit(render));
     }
 
     // const q = query(dishesRef, and(where("category", "in", categories), (where("array", "array-contains" ,lower[i])) ), 
@@ -353,6 +358,9 @@ const DishesScreen = ({ route, navigation }) => {
             dish_ingredient: doc.data().array,
             ingredient_str: doc.data().ingredients,
             image : doc.data().image,
+            prep_time : doc.data().prepTime,
+            cook_time : doc.data().cookingTime,
+            serves : doc.data().serves,
           }
 
           //To check for complexity
@@ -420,7 +428,8 @@ const DishesScreen = ({ route, navigation }) => {
             dishes.map((item) => {
               return (
                 <TouchableOpacity key = {item.key} activeOpacity={0.6} onPress={() => 
-                handleReview(item.instructions, item.title, item.dish_ingredient, item.ingredient_str, ingredients, item.image)} > 
+                handleReview(item.instructions, item.title, item.dish_ingredient, item.ingredient_str, ingredients, item.image,
+                item.category, item.prep_time, item.cook_time, item.serves)} > 
                 <DishCard key={item.key} text={item.title} image={item.image}/>
                 </TouchableOpacity>
               )

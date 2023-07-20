@@ -39,10 +39,12 @@ export default function Settings( {navigation} ) {
                         if (type == "name"){
                             const docRef = doc(firestoredb, "name", elem.id);
                             updateDoc(docRef, {nickname: Name})
+                            Alert.alert("Named changed")
                         }
                         if (type == "render"){
                             const docRef = doc(firestoredb, "name", elem.id);
                             updateDoc(docRef, {render: rendered})
+                            Alert.alert("Settings changed")
                         }
                         found = true
                     }})
@@ -58,7 +60,6 @@ export default function Settings( {navigation} ) {
                 })
                 console.log("Document written with ID: ", doc_Ref.id)
             }
-            Alert.alert("Named changed")
         } 
         
         catch {

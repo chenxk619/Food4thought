@@ -17,6 +17,10 @@ export default function Reviews({ navigation }) {
   const ingredient_str = route.params?.ingredient_str
   const image = route.params?.image
   const fromSaved = route.params?.fromSaved
+  const prep_time = route.params?.prep_time
+  const cook_time = route.params?.cook_time
+  const serves = route.params?.serves
+  const category = route.params?.category
 
   const userId = auth.currentUser.uid
   const [found, setFound] = useState(false)
@@ -53,15 +57,12 @@ export default function Reviews({ navigation }) {
           const docRef = doc(firestoredb, "saved_dishes", dishID);
           let array = []
           //Dish title, directions, array of ingredients, ingredients with desc, url
-          array.push(title, instructions, ingredients, ingredient_str, image)
+          array.push(title, instructions, ingredients, ingredient_str, image, category, serves, prep_time, cook_time)
           
           //adding
           if (!dishFound){
             updateDoc(docRef, {
               dish: arrayUnion(title), 
-              // instructions: arrayUnion(instructions),
-              // ingredients: arrayUnion(Object.assign({}, ingredients)),
-              // image: arrayUnion(image),
               userId: userId,
               array: arrayUnion(Object.assign({}, array))
             })
@@ -72,9 +73,6 @@ export default function Reviews({ navigation }) {
           else{
             updateDoc(docRef, {
               dish: arrayRemove(title), 
-              // instructions: arrayUnion(instructions),
-              // ingredients: arrayUnion(Object.assign({}, ingredients)),
-              // image: arrayUnion(image),
               userId: userId,
               array: arrayRemove(Object.assign({}, array))
             })
@@ -86,12 +84,9 @@ export default function Reviews({ navigation }) {
         //Totally new user
         else{
             let array = []
-            array.push(title, instructions, ingredients, ingredient_str, image)
+            array.push(title, instructions, ingredients, ingredient_str, image, category, serves, prep_time, cook_time)
             await addDoc(collection(firestoredb, "saved_dishes"), {
                 dish: arrayUnion(title), 
-                // instructions: arrayUnion(instructions),
-                // ingredients: arrayUnion(Object.assign({}, ingredients)),
-                // image: arrayUnion(image),
                 userId: userId,
                 array: arrayUnion(Object.assign({}, array))
             })
@@ -125,15 +120,70 @@ export default function Reviews({ navigation }) {
         </View>
       </View>
 
-      <View style={{flex:1.5, alignItems:'center', justifyContent:'flex-end'}}>
+      <View style={{flex:1.8, alignItems:'center', justifyContent:'flex-end'}}>
         <Text style={[globalStyles.appMainTitle,{flex:9,textAlign: 'center', fontSize: 35, color: 'black', marginVertical: 10, 
         marginHorizontal:10, fontFamily:'Hoefler Text'}]} numberOfLines={2} adjustsFontSizeToFit={true} > 
               {title} 
         </Text>
       </View>
 
-      <View style = {{flex : 11, paddingHorizontal:  15, marginHorizontal: 10, marginBottom: 30, justifyContent: 'flex-start'}}>
+      <View style = {{flex : 11, paddingHorizontal:  15, marginHorizontal: 10, marginBottom: 30, marginTop: 20,
+        justifyContent: 'flex-start'}}>
       <ScrollView>
+
+        <View style = {{flexDirection: 'row'}}>
+
+        <View style = {{flex:1, flexDirection: 'column'}}>
+        <Text style = {[globalStyles.appMainTitle, {color: 'black', fontSize: 18, alignSelf: 'center',fontFamily:'Hoefler Text'}]}>
+         Category
+        </Text>
+
+        <Text style = {[globalStyles.appBodyFont, {lineHeight: 30,marginTop: 10, marginBottom: 40, fontSize: 17, textAlign: 'center', 
+        fontFamily:'Hoefler Text'}]}> 
+          {category}
+        </Text>
+        </View>
+
+        <View style = {{flex:1, flexDirection: 'column'}}>
+        <Text style = {[globalStyles.appMainTitle, {color: 'black', fontSize: 18, alignSelf: 'center',fontFamily:'Hoefler Text'}]}>
+         Serves
+        </Text>
+
+        <Text style = {[globalStyles.appBodyFont, {lineHeight: 30,marginTop: 10, marginBottom: 40, fontSize: 17, textAlign: 'center', 
+        fontFamily:'Hoefler Text'}]}> 
+          {serves}
+        </Text>
+        </View>
+
+        </View>
+
+        
+        <View style = {{flexDirection: 'row'}}>
+
+        <View style = {{flex:1, flexDirection: 'column'}}>
+        <Text style = {[globalStyles.appMainTitle, {color: 'black', fontSize: 18, alignSelf: 'center',fontFamily:'Hoefler Text'}]}>
+         Preparation Time
+        </Text>
+
+        <Text style = {[globalStyles.appBodyFont, {lineHeight: 30,marginTop: 10, marginBottom: 40, fontSize: 17, textAlign: 'center', 
+        fontFamily:'Hoefler Text'}]}> 
+          {prep_time}
+        </Text>
+        </View>
+
+        <View style = {{flex:1, flexDirection: 'column'}}>
+        <Text style = {[globalStyles.appMainTitle, {color: 'black', fontSize: 18, alignSelf: 'center',fontFamily:'Hoefler Text'}]}>
+         Cooking Time
+        </Text>
+
+        <Text style = {[globalStyles.appBodyFont, {lineHeight: 30,marginTop: 10, marginBottom: 40, fontSize: 17, textAlign: 'center', 
+        fontFamily:'Hoefler Text'}]}> 
+          {cook_time}
+        </Text>
+        </View>
+
+        </View>
+
         
         <Text style = {[globalStyles.appMainTitle, {color: 'black', fontSize: 25, alignSelf: 'center',fontFamily:'Hoefler Text'}]}>
          Ingredients

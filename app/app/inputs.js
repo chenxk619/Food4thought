@@ -10,6 +10,7 @@ import { collection, getDocs, addDoc, updateDoc, doc} from 'firebase/firestore';
 import { auth, firestoredb } from "../firebaseconfig"
 
 let backup = []
+backup = []
 
 export default function Inputs({ navigation }) {
   const [inputs, setInputs] = useState('');
@@ -21,6 +22,7 @@ export default function Inputs({ navigation }) {
 
   //Only for initial render of ingredients
   useEffect(() => {
+    console.log(userId)
     //Check if user is already in collection
     getDocs(collection(firestoredb, "saved_ingredients"))
     .then((querySnapshot)=>{         
@@ -32,6 +34,7 @@ export default function Inputs({ navigation }) {
             {   
               if (elem.userId == userId){
               setFound(true)
+              backup = []
               //Load from backend
               setIngredients(elem.ingredient)
               ingredients.forEach((item) =>{
@@ -41,13 +44,13 @@ export default function Inputs({ navigation }) {
             })
         })
 
-    //Check if user is already in collection
+        console.log(found)
+
+    //Obtain the settings for dishes rendered
     getDocs(collection(firestoredb, "name"))
     .then((querySnapshot)=>{         
         const newData = querySnapshot.docs
             .map((doc) => ({...doc.data(), id:doc.id }));
-                    
-        //If found then reset name
 
             newData.forEach((elem) => 
             {   if (elem.userId == auth.currentUser.uid){
@@ -108,10 +111,6 @@ export default function Inputs({ navigation }) {
 
   const addIngredient = () => {
       Keyboard.dismiss();
-      if (ingredients.length > 10) {
-        Alert.alert(`Maximum of 10 Ingredients!`)
-        return
-      }
       if (inputs === undefined || inputs === "") {
         Alert.alert(`Please key in a valid input!`)
       }
@@ -152,7 +151,6 @@ export default function Inputs({ navigation }) {
 
   const ModalNav = (matchAll) => {
     setModalVisible(!modalVisible)
-    console.log(dishesRendered)
     navigation.navigate('DishesApp', {ingredients: ingredients, matchAll: matchAll, dishesRendered: dishesRendered});
   }
 
@@ -165,7 +163,7 @@ export default function Inputs({ navigation }) {
         <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
           <IconButton style = {{alignSelf:'flex-start', marginLeft: 20}} icon='arrow-left' size = {30} 
-          onPress={()=> navigation.navigate("Main")}/>
+          onPress={()=> {navigation.navigate("Main")}}/>
 
           <Button style={{marginRight:15, marginTop:10, height:40, width: 105}} icon='arrow-right' mode='elevated' contentStyle= {{paddingHorizontal: 5, 
           flexDirection: 'row-reverse'}} buttonColor='#111' textColor='white' onPress={setModal} compact={false} >

@@ -45,9 +45,10 @@ export default function Saved( {navigation} ) {
 
 
 
-    const handleReview = (instructions, title, dish_ingredient, ingredient_str, image) => {
+    const handleReview = (instructions, title, dish_ingredient, ingredient_str, image, category, serves, prep_time, cook_time) => {
         navigation.navigate('Reviews', {instructions: instructions, title: title, ingredients: dish_ingredient, 
-          ingredient_str: ingredient_str, image: image, fromSaved});
+        ingredient_str: ingredient_str, image: image, fromSaved, category: category, serves: serves, prep_time: prep_time,
+        cook_time: cook_time});
       }
 
     const DishCard = (props) => {
@@ -84,7 +85,7 @@ export default function Saved( {navigation} ) {
                 array.map((item) => {
                 return (
                     <TouchableOpacity key = {item} activeOpacity={0.6} onPress={() => 
-                    handleReview(item[1], item[0], item[2], item[3], item[4])} > 
+                    handleReview(item[1], item[0], item[2], item[3], item[4], item[5], item[6], item[7], item[8])} > 
                     <DishCard key = {item} text={item[0]} image={item[4]}/>
                     </TouchableOpacity>
                 )

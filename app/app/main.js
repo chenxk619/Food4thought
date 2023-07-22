@@ -86,14 +86,14 @@ export default function MainPage( {navigation} ) {
                 </View>
 
                 <View style={{flex:0.5,flexDirection:'row', alignItems:'flex-start'}}>
-                    <Card style={{ flex:1, marginHorizontal:25, backgroundColor:'white', 
+                <Card style={{ flex:1, marginHorizontal:25, backgroundColor:'white', 
                     shadowColor:'black', shadowRadius:2, marginRight:15}}>
-                        <TouchableOpacity activeOpacity={0.8}>                       
+                        <TouchableOpacity activeOpacity={0.8} onPress={handleSignOut}>                       
                         <LinearGradient colors={['rgba(247,152,98, 0.5)' ,'rgba(247,152,98, 0.5)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
                             style={{height: 160, paddingVertical:10, paddingHorizontal:15, borderRadius:10}}>
-                            <IconButton style={{justifyContent:'center', alignSelf:'center'}}icon={'account-supervisor'} size={70}/>
+                            <IconButton style={{justifyContent:'center', alignSelf:'center'}}icon={'logout'} size={70}/>
                             <Text style = {[globalStyles.appBodyFont, {fontWeight:'500', textAlign:'center'}]}>
-                                Socials
+                                Log Out
                             </Text>
                         </LinearGradient>
                         </TouchableOpacity> 
@@ -114,18 +114,7 @@ export default function MainPage( {navigation} ) {
                 </View>
 
                 <View style={{flex:0.5,flexDirection:'row', alignItems:'flex-start', justifyContent: 'center'}}>
-                    <Card style={{ flex:0.5, marginHorizontal:25, backgroundColor:'white', 
-                    shadowColor:'black', shadowRadius:2, marginRight:15}}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={handleSignOut}>                       
-                        <LinearGradient colors={['rgba(247,152,98, 0.5)' ,'rgba(247,152,98, 0.5)']} start={{x: 1, y: 0 }} end={{x: 1, y: 1 }} 
-                            style={{height: 160, paddingVertical:10, paddingHorizontal:15, borderRadius:10}}>
-                            <IconButton style={{justifyContent:'center', alignSelf:'center'}}icon={'logout'} size={70}/>
-                            <Text style = {[globalStyles.appBodyFont, {fontWeight:'500', textAlign:'center'}]}>
-                                Log Out
-                            </Text>
-                        </LinearGradient>
-                        </TouchableOpacity> 
-                    </Card>
+
                 </View>
 
             </View>

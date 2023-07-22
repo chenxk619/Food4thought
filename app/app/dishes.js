@@ -222,6 +222,8 @@ const DishesScreen = ({ route, navigation }) => {
   const dishesRef = collection(firestoredb, 'Recipe3')
   const [dishes, setDishes] = useState([]);
   const { categories } = route.params;
+  const [prevCategory, setPrevCategory] = useState(['Main course'])
+
   const { complexity } = route.params;
   const ingredients = navRoute.params.ingredients
   const matchAll = navRoute.params.matchAll
@@ -229,10 +231,13 @@ const DishesScreen = ({ route, navigation }) => {
   if (!dishesRendered){
     dishesRendered = 10
   }
+  const [startRender, setStartRender] = useState(0)
   const [render, setRender] = useState(dishesRendered)
   const [firstItem, setFirstItem] = useState('0')
   const [bottom, setBottom] = useState(true)
   let [bottomed, setBottomed] = useState(false)
+  const [final, setFinal] = useState(false)
+  const [updatedDishes2, setUpdatedDishes2] = useState([])
   const scrollRef = useRef();
   
 
@@ -319,86 +324,107 @@ const DishesScreen = ({ route, navigation }) => {
           Alert.alert.error("Error getting documents: ", error);
         });
   }
+  }, [categories, bottom]);
 
-  else{
-
-  let tempDishes = [];
-  let q;
-
-  for (let i = 0; i < lower.length; i++){
-
-    //If scrolled to bottom
-    if (bottomed){
-      q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
-      orderBy(documentId()), startAfter(firstItem), limit(render));
-      setBottomed(false)
-      }
-    
-    //If app didnt hit bottom nor hit a refresh
-    else{
-      q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))), 
-      orderBy(documentId()), startAfter('0'), limit(render));
+  //For match All
+  useEffect(() => {
+    if (categories === undefined || categories.length === 0) {
+      setDishes([]);
+      Alert.alert("No dishes found!")
+      return;
     }
 
-    // const q = query(dishesRef, and(where("category", "in", categories), (where("array", "array-contains" ,lower[i])) ), 
-    // orderBy(documentId()), startAfter(firstItem), limit(10));
-   
-    getDocs(q)
-      .then((querySnapshot) => {
-        let updatedDishes = []; // Create a new array to store the updated dishes
+    if (matchAll){
 
-        querySnapshot.forEach((doc) => {
-          setFirstItem(doc.id)
-          const instance = {
-            key: doc.id, // Add a unique identifier to each dish object
-            title: doc.data().title,
-            category: doc.data().category,
-            dish_complexity: doc.data().array.length,
-            instructions: doc.data().directions,
-            dish_ingredient: doc.data().array,
-            ingredient_str: doc.data().ingredients,
-            image : doc.data().image,
-            prep_time : doc.data().prepTime,
-            cook_time : doc.data().cookingTime,
-            serves : doc.data().serves,
-          }
+      let tempDishes = [];
+      let updatedDishes = []
+      let q;
 
-          //To check for complexity
-          if (instance.dish_complexity < complexity + 1){
+      //If categories change
+      if (String(categories) !== String(prevCategory)){
+        setPrevCategory(categories)
+        setFinal(false)
+      }
 
-            //for i > 0 (second iteration)
-            if (tempDishes.length > 0){
-              tempDishes.forEach((dish) => {
-                if (dish == instance.title){
+
+      if (!final){
+      for (let i = 0; i < lower.length; i++){
+    
+        //If app didnt hit bottom nor hit a refresh
+        q = query(dishesRef, and(where("category", "in", categories), (where( "array", "array-contains", lower[i]))));
+    
+        getDocs(q)
+          .then((querySnapshot) => {
+            updatedDishes = []; // Create a new array to store the updated dishes
+    
+            querySnapshot.forEach((doc) => {
+              const instance = {
+                key: doc.id, // Add a unique identifier to each dish object
+                title: doc.data().title,
+                category: doc.data().category,
+                dish_complexity: doc.data().array.length,
+                instructions: doc.data().directions,
+                dish_ingredient: doc.data().array,
+                ingredient_str: doc.data().ingredients,
+                image : doc.data().image,
+                prep_time : doc.data().prepTime,
+                cook_time : doc.data().cookingTime,
+                serves : doc.data().serves,
+              }
+    
+              //To check for complexity
+              if (instance.dish_complexity < complexity + 1){
+    
+                //for i > 0 (second iteration)
+                if (tempDishes.length > 0){
+                  tempDishes.forEach((dish) => {
+                    if (dish == instance.title){
+                      updatedDishes.push(instance);
+                    }
+                  })
+                }
+    
+                //first instance to update dishes
+                if (tempDishes.length == 0 && i == 0){
                   updatedDishes.push(instance);
                 }
-              })
+              }
+            });
+    
+            if (updatedDishes.length == 0 && i == lower.length - 1){
+              Alert.alert("No dishes found!")
             }
-
-            //first instance to update dishes
-            if (tempDishes.length == 0 && i == 0){
-              updatedDishes.push(instance);
-            }
+    
+            //Update temp dishes with the lastes updated dishes
+            updatedDishes.forEach((dish) => 
+            {tempDishes.push(dish.title)})
+    
+    
+            //Last iteration
+            if (i == lower.length - 1 || bottomed){
+              //setDishes(updatedDishes)
+              setUpdatedDishes2(updatedDishes)
+              setFinal(true)
+              } // Update the dishes state with the new array
+            })
+            .catch((error) => {
+              Alert.alert.error("Error getting documents: ", error);
+            });
+    
           }
-        });
-
-        if (updatedDishes.length == 0 && i == lower.length - 1){
-          Alert.alert("No dishes found!")
-        }
-
-        updatedDishes.forEach((dish) => 
-        {tempDishes.push(dish.title)})
-
-        if (i == lower.length - 1){
-          setDishes(updatedDishes);
-          } // Update the dishes state with the new array
-        })
-        .catch((error) => {
-          Alert.alert.error("Error getting documents: ", error);
-        });
       }
-  }
-  }, [categories, bottom]);
+    
+      if (final || bottomed){
+    
+        setDishes(updatedDishes2.slice(startRender, startRender+ render))
+        setStartRender(startRender + render)
+    
+      }
+    
+      }
+
+
+  },[final, bottom, categories])
 
   return (
     <SafeAreaProvider style={[globalStyles.appBody, {backgroundColor:'white'}]}>
